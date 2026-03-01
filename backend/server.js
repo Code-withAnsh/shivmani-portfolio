@@ -55,14 +55,13 @@ app.use(helmet({
 
 // ── CORS ───────────────────────────────────────────
 app.use(cors({
-  origin: [
-    "https://www.shivmanisingh.in",
-    "https://shivmanisingh.in"
-  ],
-  methods: ["GET","POST","PUT","DELETE","PATCH","OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
+  origin: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
+
+app.options('*', cors());
 
 // Handle preflight requests
 app.options("*", cors());
