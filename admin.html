@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — Shivmani Portfolio</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #090909;
+      --bg-1: #111;
+      --bg-2: #181818;
+      --bg-3: #222;
+      --gold: #C9A84C;
+      --gold-dim: rgba(201, 168, 76, 0.12);
+      --text: #E8E0D0;
+      --text-dim: #8A8070;
+      --text-muted: #4A4540;
+      --green: #22c55e;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --font: 'DM Sans', sans-serif;
+      --mono: 'DM Mono', monospace;
+      --r: 6px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100dvh;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: inherit;
+      color: inherit;
+    }
+
+    /* LOGIN */
+    #loginPage {
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(ellipse at center, rgba(201, 168, 76, 0.05) 0%, transparent 70%);
+    }
+
+    .login-box {
+      background: var(--bg-1);
+      border: 1px solid #222;
+      padding: 48px 40px;
+      border-radius: var(--r);
+      width: 380px;
+      max-width: 95vw;
+    }
+
+    .login-title {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 32px;
+    }
+
+    .form-field {
+      margin-bottom: 16px;
+    }
+
+    .form-field label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .form-field input {
+      width: 100%;
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.9rem;
+      padding: 12px 14px;
+      border-radius: 4px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-field input:focus {
+      border-color: var(--gold);
+    }
+
+    .login-btn {
+      width: 100%;
+      background: var(--gold);
+      color: #000;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 14px;
+      border-radius: 4px;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+
+    .login-btn:hover {
+      background: #E8C76A;
+    }
+
+    .login-error {
+      color: var(--red);
+      font-size: 0.8rem;
+      margin-top: 12px;
+      font-family: var(--mono);
+      display: none;
+    }
+
+    /* DASHBOARD */
+    #dashboard {
+      display: none;
+      min-height: 100dvh;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 220px;
+      background: var(--bg-1);
+      border-right: 1px solid var(--bg-3);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      padding: 24px 20px;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border-bottom: 1px solid var(--bg-3);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      transition: all 0.2s;
+      cursor: pointer;
+      border-left: 2px solid transparent;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--gold);
+      border-left-color: var(--gold);
+      background: var(--gold-dim);
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--bg-3);
+    }
+
+    .logout-btn {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .logout-btn:hover {
+      color: var(--red);
+    }
+
+    .main-content {
+      margin-left: 220px;
+      min-height: 100dvh;
+    }
+
+    .top-bar {
+      background: var(--bg-1);
+      border-bottom: 1px solid var(--bg-3);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .page-title {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .unread-badge {
+      background: var(--red);
+      color: white;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      padding: 3px 8px;
+      border-radius: 100px;
+      margin-left: 8px;
+    }
+
+    .content-area {
+      padding: 32px;
+    }
+
+    /* STATS CARDS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      padding: 24px;
+      border-radius: var(--r);
+    }
+
+    .stat-card-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .stat-card-num {
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--gold);
+    }
+
+    /* TABLES */
+    .panel {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--r);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--bg-3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .btn-sm {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+      border-radius: 4px;
+      transition: all 0.2s;
+      border: 1px solid;
+    }
+
+    .btn-gold {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .btn-gold:hover {
+      background: var(--gold);
+      color: #000;
+    }
+
+    .btn-red {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .btn-red:hover {
+      background: var(--red);
+      color: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 12px 20px;
+      text-align: left;
+      background: var(--bg-2);
+    }
+
+    td {
+      padding: 14px 20px;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      border-top: 1px solid var(--bg-3);
+    }
+
+    tr:hover td {
+      background: var(--bg-2);
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      padding: 3px 10px;
+      border-radius: 100px;
+      border: 1px solid;
+    }
+
+    .badge-gold {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .badge-green {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .badge-red {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .badge-blue {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--r);
+      padding: 32px;
+      width: 520px;
+      max-width: 95vw;
+      max-height: 90dvh;
+      overflow-y: auto;
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+
+    .modal-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .field-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .field-input,
+    .field-select,
+    .field-textarea {
+      width: 100%;
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.9rem;
+      padding: 11px 14px;
+      border-radius: 4px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .field-input:focus,
+    .field-select:focus,
+    .field-textarea:focus {
+      border-color: var(--gold);
+    }
+
+    .field-select option {
+      background: var(--bg-2);
+    }
+
+    .field-textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
+
+    .btn-cancel {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+      border: 1px solid var(--bg-3);
+      color: var(--text-muted);
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel:hover {
+      border-color: var(--text-muted);
+      color: var(--text);
+    }
+
+    .btn-save {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+      background: var(--gold);
+      color: #000;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .btn-save:hover {
+      background: #E8C76A;
+    }
+
+    .empty-row {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 60px;
+      }
+
+      .sidebar-logo,
+      .nav-item span,
+      .sidebar-footer {
+        display: none;
+      }
+
+      .main-content {
+        margin-left: 60px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .content-area {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ─── LOGIN PAGE ─── -->
+  <div id="loginPage">
+    <div class="login-box">
+      <div class="login-title">Portfolio CMS</div>
+      <div class="login-subtitle">Admin Login</div>
+      <form id="loginForm">
+        <div class="form-field">
+          <label>Username</label>
+          <input type="text" id="loginUser" autocomplete="username" required />
+        </div>
+        <div class="form-field">
+          <label>Password</label>
+          <input type="password" id="loginPass" autocomplete="current-password" required />
+        </div>
+        <button type="submit" class="login-btn">Access Dashboard</button>
+        <div class="login-error" id="loginError">Invalid credentials. Try again.</div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ─── DASHBOARD ─── -->
+  <div id="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">⚡ Admin CMS</div>
+      <nav class="sidebar-nav">
+        <div class="nav-item active" data-page="overview" onclick="showPage('overview')">
+          📊 <span>Overview</span>
+        </div>
+        <div class="nav-item" data-page="projects" onclick="showPage('projects')">
+          🗂 <span>Projects</span>
+        </div>
+        <div class="nav-item" data-page="caseStudies" onclick="showPage('caseStudies')">
+          📖 <span>Case Studies</span>
+        </div>
+        <div class="nav-item" data-page="blogPosts" onclick="showPage('blogPosts')">
+          ✍ <span>Blog Posts</span>
+        </div>
+        <div class="nav-item" data-page="audits" onclick="showPage('audits')">
+          🔍 <span>Audit Requests</span>
+        </div>
+        <div class="nav-item" data-page="contacts" onclick="showPage('contacts')">
+          ✉ <span>Messages</span>
+        </div>
+        <div class="nav-item" data-page="testimonials" onclick="showPage('testimonials')">
+          ★ <span>Testimonials</span>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="logout()">↩ Logout</button>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main-content">
+      <div class="top-bar">
+        <div class="page-title" id="pageTitle">Overview</div>
+        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--text-muted)" id="adminUser"></div>
+      </div>
+      <div class="content-area" id="contentArea">
+        <!-- Dynamic content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MODAL ─── -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-title" id="modalTitle">Add Project</div>
+      <div class="modal-fields" id="modalFields"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" onclick="saveModal()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ━━━━━━━━━━━━━━━━ CONFIG ━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const API = 'http://localhost:5005/api';
+    let token = sessionStorage.getItem('adminToken');
+    let currentPage = 'overview';
+    let modalMode = null; // { type: 'project'|'testimonial', action: 'create'|'edit', id? }
+
+    // ━━━━━━━━━━━━━━━━ INIT ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    if (token) showDashboard();
+
+    // ━━━━━━━━━━━━━━━━ AUTH ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('loginUser').value;
+      const password = document.getElementById('loginPass').value;
+      try {
+        const res = await fetch(`${API}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          token = data.token;
+          sessionStorage.setItem('adminToken', token);
+          showDashboard();
+        } else {
+          document.getElementById('loginError').style.display = 'block';
+        }
+      } catch {
+        document.getElementById('loginError').style.display = 'block';
+      }
+    });
+
+    async function showDashboard() {
+      // Verify token
+      try {
+        const res = await apiFetch('/auth/me');
+        document.getElementById('adminUser').textContent = `Logged in as: ${res.data.username}`;
+      } catch {
+        logout(); return;
+      }
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      showPage('overview');
+    }
+
+    function logout() {
+      sessionStorage.removeItem('adminToken');
+      token = null;
+      document.getElementById('loginPage').style.display = '';
+      document.getElementById('dashboard').style.display = 'none';
+    }
+
+    // ━━━━━━━━━━━━━━━━ API HELPER ━━━━━━━━━━━━━━━━━━━━━
+    async function apiFetch(path, options = {}) {
+      const res = await fetch(`${API}${path}`, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          ...(options.headers || {}),
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'API error');
+      return data;
+    }
+
+    // ━━━━━━━━━━━━━━━━ PAGES ━━━━━━━━━━━━━━━━━━━━━━━━━━
+    function showPage(page) {
+      currentPage = page;
+      document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.toggle('active', el.dataset.page === page);
+      });
+      const titles = {
+        overview: 'Overview',
+        projects: 'Projects',
+        caseStudies: 'Case Studies',
+        blogPosts: 'Blog Posts',
+        audits: 'Audit Requests',
+        contacts: 'Messages',
+        testimonials: 'Testimonials'
+      };
+      document.getElementById('pageTitle').textContent = titles[page];
+      const area = document.getElementById('contentArea');
+      area.innerHTML = '<div style="color:var(--text-muted);font-family:var(--mono);font-size:0.75rem;padding:40px">Loading...</div>';
+      const pages = {
+        overview: renderOverview,
+        projects: renderProjects,
+        caseStudies: renderCaseStudies,
+        blogPosts: renderBlogPosts,
+        audits: renderAudits,
+        contacts: renderContacts,
+        testimonials: renderTestimonials
+      };
+      pages[page]?.();
+    }
+
+    // Overview
+    async function renderOverview() {
+      const data = await apiFetch('/admin/stats');
+      const s = data.data;
+      document.getElementById('contentArea').innerHTML = `
+    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))">
+      <div class="stat-card"><div class="stat-card-label">Projects</div><div class="stat-card-num">${s.projects}</div></div>
+      <div class="stat-card"><div class="stat-card-label">Case Studies</div><div class="stat-card-num">${s.caseStudies || 0}</div></div>
+      <div class="stat-card"><div class="stat-card-label">Blog Posts</div><div class="stat-card-num">${s.blogs || 0}</div></div>
+      <div class="stat-card"><div class="stat-card-label">Audits</div><div class="stat-card-num" style="color:var(--gold)">${s.audits || 0}</div></div>
+      <div class="stat-card"><div class="stat-card-label">Unread Messages</div><div class="stat-card-num" style="color:var(--red)">${s.unread}</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title">Quick Actions</div></div>
+      <div style="padding:24px;display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn-sm btn-gold" onclick="showPage('projects');setTimeout(()=>openProjectModal(),100)">+ Project</button>
+        <button class="btn-sm btn-gold" onclick="showPage('caseStudies');setTimeout(()=>openCaseStudyModal(),100)">+ Case Study</button>
+        <button class="btn-sm btn-gold" onclick="showPage('blogPosts');setTimeout(()=>openBlogPostModal(),100)">+ Blog Post</button>
+        <button class="btn-sm btn-gold" onclick="showPage('audits')">View Audits</button>
+      </div>
+    </div>
+  `;
+    }
+
+    // Projects
+    async function renderProjects() {
+      const data = await apiFetch('/projects');
+      const rows = data.data?.length
+        ? data.data.map(p => `
+      <tr>
+        <td style="color:var(--text);font-weight:400">${p.title}</td>
+        <td><span class="badge badge-gold">${p.category}</span></td>
+        <td>${p.stack.slice(0, 3).join(', ')}</td>
+        <td>${p.featured ? '<span class="badge badge-green">Yes</span>' : '—'}</td>
+        <td style="display:flex;gap:8px;padding:14px 20px">
+          <button class="btn-sm btn-gold" onclick="editProject('${p._id}')">Edit</button>
+          <button class="btn-sm btn-red" onclick="deleteProject('${p._id}')">Delete</button>
+        </td>
+      </tr>`).join('')
+        : `<tr><td class="empty-row" colspan="5">No projects yet. Add your first one!</td></tr>`;
+
+      document.getElementById('contentArea').innerHTML = `
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Projects (${data.count})</div>
+        <button class="btn-sm btn-gold" onclick="openProjectModal()">+ Add Project</button>
+      </div>
+      <table>
+        <thead><tr><th>Title</th><th>Category</th><th>Stack</th><th>Featured</th><th>Actions</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+    }
+
+    async function editProject(id) {
+      const data = await apiFetch(`/projects/${id}`);
+      openProjectModal(data.data);
+    }
+
+    async function deleteProject(id) {
+      if (!confirm('Delete this project? This cannot be undone.')) return;
+      await apiFetch(`/admin/projects/${id}`, { method: 'DELETE' });
+      renderProjects();
+    }
+
+    async function openProjectModal(proj = null) {
+      modalMode = { type: 'project', action: proj ? 'edit' : 'create', id: proj?._id };
+      try {
+        const csData = await apiFetch('/case-studies');
+        window._caseStudies = csData.data;
+      } catch (e) {
+        window._caseStudies = [];
+      }
+
+      document.getElementById('modalTitle').textContent = proj ? 'Edit Project' : 'Add Project';
+      document.getElementById('modalFields').innerHTML = `
+        <div><label class="field-label">Title*</label><input class="field-input" id="f_title" value="${proj?.title || ''}" placeholder="My Awesome Project" /></div>
+        <div><label class="field-label">Description*</label><textarea class="field-textarea" id="f_desc">${proj?.description || ''}</textarea></div>
+        <div><label class="field-label">Category*</label>
+          <select class="field-select" id="f_cat">
+            ${['Frontend', 'Full Stack', 'API', 'Backend'].map(c => `<option ${proj?.category === c ? 'selected' : ''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div><label class="field-label">Tech Stack (comma separated)*</label><input class="field-input" id="f_stack" value="${proj?.stack?.join(', ') || ''}" placeholder="HTML, CSS, Node.js" /></div>
+        <div><label class="field-label">Live Demo URL</label><input class="field-input" id="f_demo" value="${proj?.demo || ''}" /></div>
+        <div><label class="field-label">GitHub URL</label><input class="field-input" id="f_github" value="${proj?.github || ''}" /></div>
+        <div><label class="field-label">Image URL</label><input class="field-input" id="f_image" value="${proj?.image || ''}" /></div>
+        <div><label class="field-label">Linked Case Study</label>
+          <select class="field-select" id="f_caseStudy">
+            <option value="">None</option>
+            ${window._caseStudies.map(cs => `<option value="${cs._id}" ${proj?.caseStudy === cs._id || proj?.caseStudy?._id === cs._id ? 'selected' : ''}>${cs.title}</option>`).join('')}
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px"><input type="checkbox" id="f_featured" ${proj?.featured ? 'checked' : ''} /><label for="f_featured" style="font-size:0.85rem">Mark as Featured</label></div>
+      `;
+      document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    // Contacts
+    async function renderContacts(statusFilter = 'all') {
+      const query = statusFilter !== 'all' ? `?status=${statusFilter}` : '';
+      const data = await apiFetch(`/admin/contacts${query}`);
+      const rows = data.data?.length
+        ? data.data.map(c => `
+      <tr>
+        <td style="color:var(--text)">${c.name}</td>
+        <td>${c.email}</td>
+        <td>${c.phone || '—'}</td>
+        <td><span class="badge badge-gold">${c.service || 'General'}</span></td>
+        <td>${c.budget || '—'}</td>
+        <td>${c.message.slice(0, 50)}${c.message.length > 50 ? '...' : ''}</td>
+        <td><span class="badge ${c.status === 'unread' ? 'badge-red' : c.status === 'replied' ? 'badge-green' : 'badge-blue'}">${c.status}</span></td>
+        <td>${new Date(c.createdAt).toLocaleDateString()}</td>
+        <td>
+          <div style="display:flex;gap:6px">
+            <button class="btn-sm btn-gold" onclick="updateStatus('${c._id}','replied')">Replied</button>
+            <button class="btn-sm btn-red" onclick="deleteContact('${c._id}')">Delete</button>
+          </div>
+        </td>
+      </tr>`).join('')
+        : `<tr><td class="empty-row" colspan="9">No messages found.</td></tr>`;
+
+      document.getElementById('contentArea').innerHTML = `
+      <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Messages (${data.count})</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-sm ${statusFilter === 'all' ? 'btn-gold' : ''}" onclick="renderContacts('all')">All</button>
+          <button class="btn-sm ${statusFilter === 'unread' ? 'btn-gold' : ''}" onclick="renderContacts('unread')">Pending</button>
+          <button class="btn-sm ${statusFilter === 'replied' ? 'btn-gold' : ''}" onclick="renderContacts('replied')">Replied</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto"><table>
+        <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Service</th><th>Budget</th><th>Message</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+    </div>`;
+    }
+
+    async function updateStatus(id, status) {
+      await apiFetch(`/admin/contacts/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) });
+      renderContacts();
+    }
+
+    async function deleteContact(id) {
+      if (!confirm('Delete this message?')) return;
+      await apiFetch(`/admin/contacts/${id}`, { method: 'DELETE' });
+      renderContacts();
+    }
+
+    // Testimonials
+    async function renderTestimonials() {
+      const data = await apiFetch('/testimonials');
+      const rows = data.data?.length
+        ? data.data.map(t => `
+      <tr>
+        <td style="color:var(--text)">${t.name}</td>
+        <td>${t.role}</td>
+        <td>${t.text.slice(0, 80)}...</td>
+        <td>${'★'.repeat(t.stars)}</td>
+        <td><span class="badge ${t.approved ? 'badge-green' : 'badge-red'}">${t.approved ? 'Approved' : 'Pending'}</span></td>
+        <td style="display:flex;gap:8px;padding:14px 20px">
+          <button class="btn-sm btn-red" onclick="deleteTestimonial('${t._id}')">Delete</button>
+        </td>
+      </tr>`).join('')
+        : `<tr><td class="empty-row" colspan="6">No testimonials yet. Add one!</td></tr>`;
+
+      document.getElementById('contentArea').innerHTML = `
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Testimonials (${data.count})</div>
+        <button class="btn-sm btn-gold" onclick="openTestimonialModal()">+ Add Testimonial</button>
+      </div>
+      <table>
+        <thead><tr><th>Name</th><th>Role</th><th>Testimonial</th><th>Stars</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+    }
+
+    function openTestimonialModal() {
+      modalMode = { type: 'testimonial', action: 'create' };
+      document.getElementById('modalTitle').textContent = 'Add Testimonial';
+      document.getElementById('modalFields').innerHTML = `
+    <div><label class="field-label">Name*</label><input class="field-input" id="f_name" placeholder="John Doe" /></div>
+    <div><label class="field-label">Role / Company*</label><input class="field-input" id="f_role" placeholder="Startup Founder, Acme Inc." /></div>
+    <div><label class="field-label">Testimonial Text*</label><textarea class="field-textarea" id="f_text" placeholder="Amazing work..."></textarea></div>
+    <div><label class="field-label">Stars (1–5)</label>
+      <select class="field-select" id="f_stars">${[5, 4, 3, 2, 1].map(n => `<option value="${n}">${n} Stars</option>`).join('')}</select>
+    </div>
+  `;
+      document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    async function deleteTestimonial(id) {
+      if (!confirm('Delete this testimonial?')) return;
+      await apiFetch(`/admin/testimonials/${id}`, { method: 'DELETE' });
+      renderTestimonials();
+    }
+
+    // 🏆 CASE STUDIES
+    async function renderCaseStudies() {
+      const data = await apiFetch('/case-studies');
+      const rows = data.data?.length
+        ? data.data.map(cs => `
+      <tr>
+        <td style="color:var(--text)">${cs.title}</td>
+        <td><span class="badge badge-gold">${cs.category || 'Full Stack'}</span></td>
+        <td>${cs.slug}</td>
+        <td>${cs.results?.length || 0} results</td>
+        <td style="display:flex;gap:8px;padding:14px 20px">
+          <button class="btn-sm btn-gold" onclick="editCaseStudy('${cs._id}')">Edit</button>
+          <button class="btn-sm btn-red" onclick="deleteCaseStudy('${cs._id}')">Delete</button>
+        </td>
+      </tr>`).join('')
+        : `<tr><td class="empty-row" colspan="5">No case studies found.</td></tr>`;
+
+      document.getElementById('contentArea').innerHTML = `
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Case Studies (${data.count})</div>
+          <button class="btn-sm btn-gold" onclick="openCaseStudyModal()">+ Add Case Study</button>
+        </div>
+        <table>
+          <thead><tr><th>Title</th><th>Category</th><th>Slug</th><th>Impact</th><th>Actions</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+    }
+
+    async function editCaseStudy(id) {
+      const data = await apiFetch(`/case-studies/${id}`);
+      openCaseStudyModal(data.data);
+    }
+
+    async function deleteCaseStudy(id) {
+      if (!confirm('Delete this case study?')) return;
+      await apiFetch(`/admin/case-studies/${id}`, { method: 'DELETE' });
+      renderCaseStudies();
+    }
+
+    function openCaseStudyModal(cs = null) {
+      modalMode = { type: 'caseStudy', action: cs ? 'edit' : 'create', id: cs?._id };
+      document.getElementById('modalTitle').textContent = cs ? 'Edit Case Study' : 'Add Case Study';
+      document.getElementById('modalFields').innerHTML = `
+        <div><label class="field-label">Title*</label><input class="field-input" id="f_cs_title" value="${cs?.title || ''}" /></div>
+        <div><label class="field-label">Slug* (URL friendly)</label><input class="field-input" id="f_cs_slug" value="${cs?.slug || ''}" /></div>
+        <div><label class="field-label">Problem / Challenge*</label><textarea class="field-textarea" id="f_cs_problem">${cs?.problem || ''}</textarea></div>
+        <div><label class="field-label">Solution / Architecture*</label><textarea class="field-textarea" id="f_cs_solution">${cs?.solution || ''}</textarea></div>
+        <div><label class="field-label">Key Results (comma separated)*</label><textarea class="field-textarea" id="f_cs_results">${cs?.results?.join(', ') || ''}</textarea></div>
+        <div><label class="field-label">Tech Stack (comma separated)*</label><input class="field-input" id="f_cs_stack" value="${cs?.stack?.join(', ') || ''}" /></div>
+        <div><label class="field-label">Category</label><input class="field-input" id="f_cs_cat" value="${cs?.category || 'Full Stack'}" /></div>
+      `;
+      document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    // ✍ BLOG POSTS
+    async function renderBlogPosts() {
+      const data = await apiFetch('/blogs');
+      const rows = data.data?.length
+        ? data.data.map(p => `
+      <tr>
+        <td style="color:var(--text)">${p.title}</td>
+        <td><span class="badge badge-gold">${p.category || 'Engineering'}</span></td>
+        <td>${p.views || 0} views</td>
+        <td>${new Date(p.createdAt).toLocaleDateString()}</td>
+        <td style="display:flex;gap:8px;padding:14px 20px">
+          <button class="btn-sm btn-gold" onclick="editBlogPost('${p._id}')">Edit</button>
+          <button class="btn-sm btn-red" onclick="deleteBlogPost('${p._id}')">Delete</button>
+        </td>
+      </tr>`).join('')
+        : `<tr><td class="empty-row" colspan="5">No blog posts yet.</td></tr>`;
+
+      document.getElementById('contentArea').innerHTML = `
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Blog Posts (${data.count})</div>
+          <button class="btn-sm btn-gold" onclick="openBlogPostModal()">+ Write Post</button>
+        </div>
+        <table>
+          <thead><tr><th>Title</th><th>Category</th><th>Stats</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+    }
+
+    async function editBlogPost(id) {
+      const data = await apiFetch(`/blogs/${id}`);
+      openBlogPostModal(data.data);
+    }
+
+    async function deleteBlogPost(id) {
+      if (!confirm('Delete this article?')) return;
+      await apiFetch(`/admin/blogs/${id}`, { method: 'DELETE' });
+      renderBlogPosts();
+    }
+
+    function openBlogPostModal(p = null) {
+      modalMode = { type: 'blogPost', action: p ? 'edit' : 'create', id: p?._id };
+      document.getElementById('modalTitle').textContent = p ? 'Edit Post' : 'New Article';
+      document.getElementById('modalFields').innerHTML = `
+        <div><label class="field-label">Title*</label><input class="field-input" id="f_blog_title" value="${p?.title || ''}" /></div>
+        <div><label class="field-label">Slug*</label><input class="field-input" id="f_blog_slug" value="${p?.slug || ''}" /></div>
+        <div><label class="field-label">Excerpt* (Short summary)</label><textarea class="field-textarea" id="f_blog_excerpt">${p?.excerpt || ''}</textarea></div>
+        <div><label class="field-label">Content* (Markdown supported)</label><textarea class="field-textarea" id="f_blog_content" style="min-height:300px">${p?.content || ''}</textarea></div>
+        <div><label class="field-label">Tags (comma separated)</label><input class="field-input" id="f_blog_tags" value="${p?.tags?.join(', ') || ''}" /></div>
+        <div><label class="field-label">Main Image URL</label><input class="field-input" id="f_blog_image" value="${p?.image || ''}" /></div>
+        <div><label class="field-label">Category</label><input class="field-input" id="f_blog_cat" value="${p?.category || 'Engineering'}" /></div>
+      `;
+      document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    // 🔍 AUDIT REQUESTS
+    async function renderAudits() {
+      const data = await apiFetch('/admin/audits');
+      const rows = data.data?.length
+        ? data.data.map(a => `
+      <tr>
+        <td style="color:var(--text)">${a.name}</td>
+        <td>${a.email}</td>
+        <td><a href="${a.websiteUrl}" target="_blank" class="gold-text">${a.websiteUrl}</a></td>
+        <td>${a.concern.slice(0, 40)}...</td>
+        <td><span class="badge ${a.status === 'pending' ? 'badge-red' : 'badge-green'}">${a.status}</span></td>
+        <td>${new Date(a.createdAt).toLocaleDateString()}</td>
+        <td style="display:flex;gap:8px;padding:14px 20px">
+          <button class="btn-sm btn-gold" onclick="updateAuditStatus('${a._id}','reviewed')">Reviewed</button>
+          <button class="btn-sm btn-red" onclick="deleteAudit('${a._id}')">Delete</button>
+        </td>
+      </tr>`).join('')
+        : `<tr><td class="empty-row" colspan="7">No audit requests yet.</td></tr>`;
+
+      document.getElementById('contentArea').innerHTML = `
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Audit Requests (${data.count})</div>
+        </div>
+        <div style="overflow-x:auto"><table>
+          <thead><tr><th>Client</th><th>Email</th><th>URL</th><th>Main Concern</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table></div>
+      </div>`;
+    }
+
+    async function updateAuditStatus(id, status) {
+      await apiFetch(`/admin/audits/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) });
+      renderAudits();
+    }
+
+    async function deleteAudit(id) {
+      if (!confirm('Delete this audit request?')) return;
+      await apiFetch(`/admin/audits/${id}`, { method: 'DELETE' });
+      renderAudits();
+    }
+
+    // ━━━━━━━━━━━━━━━━ MODAL SAVE ━━━━━━━━━━━━━━━━━━━━━
+    async function saveModal() {
+      if (!modalMode) return;
+      try {
+        if (modalMode.type === 'project') {
+          const body = {
+            title: document.getElementById('f_title').value,
+            description: document.getElementById('f_desc').value,
+            category: document.getElementById('f_cat').value,
+            stack: document.getElementById('f_stack').value.split(',').map(s => s.trim()).filter(Boolean),
+            demo: document.getElementById('f_demo').value,
+            github: document.getElementById('f_github').value,
+            image: document.getElementById('f_image').value,
+            caseStudy: document.getElementById('f_caseStudy').value || null,
+            featured: document.getElementById('f_featured').checked,
+          };
+          if (modalMode.action === 'create') {
+            await apiFetch('/admin/projects', { method: 'POST', body: JSON.stringify(body) });
+          } else {
+            await apiFetch(`/admin/projects/${modalMode.id}`, { method: 'PUT', body: JSON.stringify(body) });
+          }
+          closeModal();
+          renderProjects();
+        } else if (modalMode.type === 'testimonial') {
+          const body = {
+            name: document.getElementById('f_name').value,
+            role: document.getElementById('f_role').value,
+            text: document.getElementById('f_text').value,
+            stars: parseInt(document.getElementById('f_stars').value),
+          };
+          await apiFetch('/admin/testimonials', { method: 'POST', body: JSON.stringify(body) });
+          closeModal();
+          renderTestimonials();
+        }
+        else if (modalMode.type === 'caseStudy') {
+          const body = {
+            title: document.getElementById('f_cs_title').value,
+            slug: document.getElementById('f_cs_slug').value,
+            problem: document.getElementById('f_cs_problem').value,
+            solution: document.getElementById('f_cs_solution').value,
+            results: document.getElementById('f_cs_results').value.split(',').map(r => r.trim()).filter(Boolean),
+            stack: document.getElementById('f_cs_stack').value.split(',').map(s => s.trim()).filter(Boolean),
+            category: document.getElementById('f_cs_cat').value,
+          };
+          if (modalMode.action === 'create') {
+            await apiFetch('/admin/case-studies', { method: 'POST', body: JSON.stringify(body) });
+          } else {
+            await apiFetch(`/admin/case-studies/${modalMode.id}`, { method: 'PUT', body: JSON.stringify(body) });
+          }
+          closeModal();
+          renderCaseStudies();
+        } else if (modalMode.type === 'blogPost') {
+          const body = {
+            title: document.getElementById('f_blog_title').value,
+            slug: document.getElementById('f_blog_slug').value,
+            excerpt: document.getElementById('f_blog_excerpt').value,
+            content: document.getElementById('f_blog_content').value,
+            tags: document.getElementById('f_blog_tags').value.split(',').map(t => t.trim()).filter(Boolean),
+            image: document.getElementById('f_blog_image').value,
+            category: document.getElementById('f_blog_cat').value,
+          };
+          if (modalMode.action === 'create') {
+            await apiFetch('/admin/blogs', { method: 'POST', body: JSON.stringify(body) });
+          } else {
+            await apiFetch(`/admin/blogs/${modalMode.id}`, { method: 'PUT', body: JSON.stringify(body) });
+          }
+          closeModal();
+          renderBlogPosts();
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('show');
+      modalMode = null;
+    }
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeModal();
+    });
+  </script>
+</body>
+
+</html>

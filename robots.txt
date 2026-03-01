@@ -1,0 +1,13 @@
+# Robots.txt for Shivmani Singh Portfolio
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /service.html
+Allow: /case-study.html
+Allow: /blog.html
+
+# Disallow admin areas
+Disallow: /admin.html
+Disallow: /api/
+
+Sitemap: https://shivmanisingh.dev/sitemap.xml

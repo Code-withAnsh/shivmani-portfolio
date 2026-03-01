@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | Shivmani Singh</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg: #030303;
+            --bg-1: #0a0a0a;
+            --bg-2: #121212;
+            --bg-3: #1a1a1a;
+            --gold: #D4AF37;
+            --gold-light: #F1D592;
+            --gold-dim: rgba(212, 175, 55, 0.15);
+            --gold-border: rgba(212, 175, 55, 0.3);
+            --text: #e5e5e5;
+            --text-dim: #a0a0a0;
+            --text-muted: #666;
+            --font-display: 'Inter', -apple-system, sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --radius: 8px;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            padding: 40px 0;
+            border-bottom: 1px solid var(--bg-3);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            transition: color 0.3s;
+            margin-bottom: 24px;
+        }
+
+        .back-btn:hover {
+            color: var(--gold);
+        }
+
+        .blog-hero {
+            padding: 80px 0 40px;
+            text-align: center;
+        }
+
+        .blog-title {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .blog-image {
+            width: 100%;
+            border-radius: var(--radius);
+            margin: 40px 0;
+            border: 1px solid var(--bg-3);
+        }
+
+        .blog-content {
+            padding-bottom: 100px;
+            font-size: 1.1rem;
+            color: var(--text-dim);
+        }
+
+        .blog-content h2 {
+            color: var(--gold);
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            margin: 40px 0 20px;
+        }
+
+        .blog-content p {
+            margin-bottom: 25px;
+        }
+
+        .blog-content pre {
+            background: var(--bg-1);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--bg-3);
+            overflow-x: auto;
+            margin-bottom: 25px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+        }
+
+        .blog-tags {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--bg-3);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--bg-1);
+            border: 1px solid var(--bg-3);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-right: 10px;
+            color: var(--gold);
+        }
+
+        footer {
+            padding: 60px 0;
+            border-top: 1px solid var(--bg-3);
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-btn"><i class="ri-arrow-left-line"></i> Back to Home</a>
+        </header>
+
+        <main id="blogPostContent">
+            <div class="blog-hero">
+                <h1 class="blog-title" id="title">Loading Post...</h1>
+                <div class="blog-meta">
+                    <span><i class="ri-calendar-line"></i> <span id="date">--</span></span>
+                    <span><i class="ri-eye-line"></i> <span id="views">0</span> views</span>
+                </div>
+            </div>
+
+            <img id="mainImage" class="blog-image"
+                src="https://via.placeholder.com/1200x600/0a0a0a/d4af37?text=Technical+Insights" style="display:none;">
+
+            <div class="blog-content" id="content">
+                <!-- Content will be injected here -->
+            </div>
+
+            <div class="blog-tags" id="tags">
+                <!-- Tags -->
+            </div>
+        </main>
+    </div>
+
+    <footer class="container">
+        <p style="color: var(--text-muted); font-size: 0.8rem;">© Shivmani Singh · Technical Thought Leader · 2026</p>
+    </footer>
+
+    <script>
+        const API_BASE = 'http://localhost:5005/api';
+
+        async function loadBlogPost() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+
+            if (!slug) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/blogs/${slug}`);
+                const data = await res.json();
+
+                if (data.success) {
+                    const post = data.data;
+                    document.title = `${post.title} | Blog | Shivmani Singh`;
+                    document.getElementById('title').textContent = post.title;
+                    document.getElementById('date').textContent = new Date(post.createdAt).toLocaleDateString();
+                    document.getElementById('views').textContent = post.views || 0;
+
+                    // Simple Markdown-to-HTML (minimal for demo)
+                    const contentDiv = document.getElementById('content');
+                    contentDiv.innerHTML = post.content
+                        .split('\n\n')
+                        .map(p => {
+                            if (p.startsWith('## ')) return `<h2>${p.substring(3)}</h2>`;
+                            if (p.startsWith('```')) return `<pre>${p.replace(/```/g, '')}</pre>`;
+                            return `<p>${p}</p>`;
+                        })
+                        .join('');
+
+                    if (post.image) {
+                        const img = document.getElementById('mainImage');
+                        img.src = post.image;
+                        img.style.display = 'block';
+                    }
+
+                    // Render tags
+                    const tags = document.getElementById('tags');
+                    if (post.tags) {
+                        post.tags.forEach(t => {
+                            const span = document.createElement('span');
+                            span.className = 'tag';
+                            span.textContent = `#${t}`;
+                            tags.appendChild(span);
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load blog post:', err);
+            }
+        }
+
+        loadBlogPost();
+    </script>
+</body>
+
+</html>

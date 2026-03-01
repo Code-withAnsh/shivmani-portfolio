@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Study | Shivmani Singh</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg: #030303;
+            --bg-1: #0a0a0a;
+            --bg-2: #121212;
+            --bg-3: #1a1a1a;
+            --gold: #D4AF37;
+            --gold-light: #F1D592;
+            --gold-dim: rgba(212, 175, 55, 0.15);
+            --gold-border: rgba(212, 175, 55, 0.3);
+            --text: #e5e5e5;
+            --text-dim: #a0a0a0;
+            --text-muted: #666;
+            --font-display: 'Inter', -apple-system, sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --radius: 8px;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .gold-text {
+            color: var(--gold);
+        }
+
+        header {
+            padding: 40px 0;
+            border-bottom: 1px solid var(--bg-3);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            transition: color 0.3s;
+            margin-bottom: 24px;
+        }
+
+        .back-btn:hover {
+            color: var(--gold);
+        }
+
+        .cs-hero {
+            padding: 100px 0 60px;
+        }
+
+        .cs-title {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .cs-meta {
+            display: flex;
+            gap: 30px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .cs-content {
+            padding: 60px 0;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 60px;
+        }
+
+        .cs-main h2 {
+            font-size: 1.8rem;
+            color: var(--gold);
+            margin: 40px 0 20px;
+            font-family: var(--font-display);
+        }
+
+        .cs-main p {
+            color: var(--text-dim);
+            margin-bottom: 20px;
+        }
+
+        .cs-sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .sidebar-widget {
+            background: var(--bg-1);
+            border: 1px solid var(--bg-3);
+            padding: 30px;
+            border-radius: var(--radius);
+            margin-bottom: 30px;
+        }
+
+        .widget-title {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--bg-2);
+            border: 1px solid var(--bg-3);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin: 0 6px 6px 0;
+            color: var(--text-dim);
+        }
+
+        .cs-results {
+            background: var(--gold-dim);
+            border: 1px solid var(--gold-border);
+            padding: 40px;
+            border-radius: var(--radius);
+            margin-top: 40px;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .result-item i {
+            color: var(--gold);
+        }
+
+        footer {
+            padding: 60px 0;
+            border-top: 1px solid var(--bg-3);
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html#projects" class="back-btn"><i class="ri-arrow-left-line"></i> Back to Projects</a>
+        </header>
+
+        <main id="caseStudyContent">
+            <div class="cs-hero">
+                <h1 class="cs-title" id="title">Loading Project...</h1>
+                <div class="cs-meta">
+                    <span><i class="ri-calendar-line"></i> <span id="date">--</span></span>
+                    <span><i class="ri-price-tag-3-line"></i> <span id="category">--</span></span>
+                </div>
+            </div>
+
+            <div class="cs-content">
+                <div class="cs-main">
+                    <section>
+                        <h2>The Challenge</h2>
+                        <p id="problem">Loading content...</p>
+                    </section>
+
+                    <section>
+                        <h2>Strategic Solution</h2>
+                        <p id="solution">Technical breakdown and architecture approach.</p>
+                    </section>
+
+                    <section>
+                        <h2>Key Results</h2>
+                        <div class="cs-results" id="results">
+                            <!-- Result items -->
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="cs-sidebar">
+                    <div class="sidebar-widget">
+                        <div class="widget-title">Technologies Used</div>
+                        <div id="techStack">
+                            <!-- Tech tags -->
+                        </div>
+                    </div>
+
+                    <div class="sidebar-widget">
+                        <div class="widget-title">Performance Metrics</div>
+                        <div style="font-family: var(--font-mono); font-size: 0.9rem;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                                <span>Lighthouse</span>
+                                <span class="gold-text">98+</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between;">
+                                <span>SEO Score</span>
+                                <span class="gold-text">100</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="index.html#contact" class="btn-primary"
+                        style="display: block; text-align: center; background: var(--gold); color:#000; padding: 15px; border-radius: var(--radius); font-weight: 600; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">Start
+                        a Similar Project ✦</a>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <footer class="container">
+        <p style="color: var(--text-muted); font-size: 0.8rem;">© Shivmani Singh · Solution Architect · 2026</p>
+    </footer>
+
+    <script>
+        const API_BASE = 'http://localhost:5005/api';
+
+        async function loadCaseStudy() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+
+            if (!slug) {
+                window.location.href = 'index.html#projects';
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/case-studies/${slug}`);
+                const data = await res.json();
+
+                if (data.success) {
+                    const cs = data.data;
+                    document.title = `${cs.title} | Case Study | Shivmani Singh`;
+                    document.getElementById('title').textContent = cs.title;
+                    document.getElementById('date').textContent = new Date(cs.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                    document.getElementById('category').textContent = cs.category || 'Full Stack';
+                    document.getElementById('problem').textContent = cs.problem;
+                    document.getElementById('solution').textContent = cs.solution || cs.description;
+
+                    // Render tech stack
+                    const stack = document.getElementById('techStack');
+                    cs.stack.forEach(t => {
+                        const span = document.createElement('span');
+                        span.className = 'tech-tag';
+                        span.textContent = t;
+                        stack.appendChild(span);
+                    });
+
+                    // Render results
+                    const results = document.getElementById('results');
+                    if (cs.results && Array.isArray(cs.results)) {
+                        cs.results.forEach(r => {
+                            const div = document.createElement('div');
+                            div.className = 'result-item';
+                            div.innerHTML = `<i class="ri-checkbox-circle-fill"></i> <span>${r}</span>`;
+                            results.appendChild(div);
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load case study:', err);
+            }
+        }
+
+        loadCaseStudy();
+    </script>
+</body>
+
+</html>

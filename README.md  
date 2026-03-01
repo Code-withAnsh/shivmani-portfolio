@@ -1,0 +1,205 @@
+# 🚀 Shivmani Singh — Professional Portfolio
+
+A production-ready full-stack portfolio website built with Node.js, Express, MongoDB, and vanilla JavaScript.
+
+**Live:** https://shivmanisingh.dev · **Admin:** /admin.html
+
+---
+
+## 📁 Folder Structure
+
+```
+portfolio/
+├── index.html              # Main portfolio frontend
+├── admin.html              # Admin dashboard (protected)
+│
+└── backend/
+    ├── server.js           # Express app entry point
+    ├── package.json
+    ├── .env.example        # → Copy to .env and fill values
+    │
+    ├── config/
+    │   └── db.js           # MongoDB connection
+    │
+    ├── models/
+    │   └── index.js        # Project, Contact, Testimonial, Admin schemas
+    │
+    ├── controllers/
+    │   └── index.js        # All business logic
+    │
+    ├── routes/
+    │   ├── projectRoutes.js
+    │   ├── contactRoutes.js
+    │   ├── testimonialRoutes.js
+    │   ├── authRoutes.js
+    │   └── adminRoutes.js
+    │
+    └── middleware/
+        └── auth.js         # JWT protection middleware
+```
+
+---
+
+## ⚙️ API Reference
+
+| Method | Route | Access | Description |
+|--------|-------|--------|-------------|
+| GET | `/api/health` | Public | Health check |
+| GET | `/api/projects` | Public | Get all projects |
+| GET | `/api/projects/:id` | Public | Get single project |
+| POST | `/api/contact` | Public | Submit contact form |
+| GET | `/api/testimonials` | Public | Get approved testimonials |
+| POST | `/api/auth/login` | Public | Admin login → JWT |
+| POST | `/api/auth/setup` | Public* | Create first admin account |
+| GET | `/api/auth/me` | Protected | Get current admin |
+| GET | `/api/admin/stats` | Protected | Dashboard stats |
+| POST | `/api/admin/projects` | Protected | Add project |
+| PUT | `/api/admin/projects/:id` | Protected | Edit project |
+| DELETE | `/api/admin/projects/:id` | Protected | Delete project |
+| GET | `/api/admin/contacts` | Protected | View messages |
+| PATCH | `/api/admin/contacts/:id/status` | Protected | Update message status |
+| POST | `/api/admin/testimonials` | Protected | Add testimonial |
+| DELETE | `/api/admin/testimonials/:id` | Protected | Delete testimonial |
+
+> ⚠️ `/api/auth/setup` creates the first admin. **Comment it out** after use!
+
+---
+
+## 🖥️ Local Development
+
+### 1. Clone & install
+
+```bash
+git clone https://github.com/Code-withAnsh/portfolio.git
+cd portfolio/backend
+npm install
+```
+
+### 2. Set up environment
+
+```bash
+cp .env.example .env
+# Edit .env with your MongoDB URI and JWT secret
+```
+
+### 3. Start development server
+
+```bash
+npm run dev    # Uses nodemon for hot reload
+```
+
+Visit: `http://localhost:5000`
+
+---
+
+## 🌍 Deployment Guide
+
+### Option A: Frontend → Vercel + Backend → Render (Recommended)
+
+#### Frontend (Vercel)
+
+1. Push code to GitHub
+2. Go to [vercel.com](https://vercel.com) → New Project → Import repo
+3. Set root directory to `/` (portfolio root)
+4. Add environment variable: `VITE_API_URL=https://your-backend.render.com`
+5. Deploy ✅
+
+#### Backend (Render)
+
+1. Go to [render.com](https://render.com) → New Web Service
+2. Connect GitHub repo
+3. **Root Directory:** `backend`
+4. **Build Command:** `npm install`
+5. **Start Command:** `npm start`
+6. Add environment variables:
+   ```
+   PORT=5000
+   NODE_ENV=production
+   MONGO_URI=your_mongodb_atlas_uri
+   JWT_SECRET=your_super_secret_key
+   JWT_EXPIRES_IN=7d
+   FRONTEND_URL=https://your-portfolio.vercel.app
+   ```
+7. Deploy ✅
+
+---
+
+### Option B: Full-stack on Railway
+
+1. Push to GitHub
+2. Go to [railway.app](https://railway.app) → New Project → Deploy from GitHub
+3. Add MongoDB plugin (or use MongoDB Atlas)
+4. Set the same environment variables as above
+5. **Start command:** `cd backend && npm start`
+
+---
+
+### MongoDB Atlas Setup
+
+1. Go to [cloud.mongodb.com](https://cloud.mongodb.com)
+2. Create a free cluster (M0 Shared)
+3. Database Access → Add user with password
+4. Network Access → Allow from anywhere (0.0.0.0/0 for production, or Render's IP)
+5. Connect → Drivers → Copy the connection string
+6. Replace `<password>` in the URI and set as `MONGO_URI`
+
+---
+
+## 🔐 Creating Your First Admin Account
+
+After deploying the backend, make a **one-time POST request**:
+
+```bash
+curl -X POST https://your-backend.render.com/api/auth/setup \
+  -H "Content-Type: application/json" \
+  -d '{"username":"shivmani","password":"your_strong_password"}'
+```
+
+Then **comment out or delete** the `/setup` route in `routes/authRoutes.js`!
+
+**Admin dashboard:** Visit `https://your-domain.com/admin.html`
+
+---
+
+## 🔒 Security Features
+
+- Helmet.js (HTTP security headers)
+- CORS with whitelist
+- Rate limiting (global + contact + login)
+- JWT authentication with expiry
+- bcrypt password hashing (12 rounds)
+- Input validation with Mongoose
+- Honeypot spam protection
+- Request body size limit (10kb)
+
+---
+
+## 📊 MongoDB Schema Overview
+
+**Project:** title, description, stack[], category, image, demo, github, featured, order  
+**Contact:** name, email, subject, message, status, ip  
+**Testimonial:** name, role, text, stars, company, approved, order  
+**Admin:** username, password (hashed), lastLogin  
+
+---
+
+## 🎨 Frontend Features
+
+- Dark/Light mode toggle
+- Typing animation in hero
+- Scroll reveal animations
+- Project category filtering
+- Dynamic project & testimonial loading from API with static fallback
+- Contact form with validation and rate limiting
+- Fully responsive (mobile-first)
+- Performance optimized (lazy images, minimal dependencies)
+
+---
+
+## 📄 License
+
+MIT © 2024 Shivmani Singh
+
+---
+
+*Built with ❤️ by [Shivmani Singh](https://github.com/Code-withAnsh)*
