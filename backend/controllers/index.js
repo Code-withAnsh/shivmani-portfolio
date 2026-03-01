@@ -350,7 +350,7 @@ const login = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Username and password are required' });
     }
 
-    const admin = await Admin.findOne({ username: username.toLowerCase().trim() });
+    const admin = await Admin.findOne({ username: username.trim() });
     if (!admin) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
