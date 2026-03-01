@@ -2669,7 +2669,9 @@
   <!-- ─────────────── SCRIPTS ─────────────── -->
   <script>
     // ━━━━━━━━━━━━━━━━━ CONFIG ━━━━━━━━━━━━━━━━━
-    const API_BASE = 'https://shivmani-portfolio-api.onrender.com/api';
+const API = window.location.origin === 'https://shivmanisingh.in'
+  ? 'https://shivmani-portfolio-api.onrender.com/api'
+  : 'http://localhost:5001/api';
 
     // ━━━━━━━━━━━━━━━━━ LOADER ━━━━━━━━━━━━━━━━━
     window.addEventListener('load', () => {

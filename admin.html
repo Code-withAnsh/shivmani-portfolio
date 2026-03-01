@@ -629,7 +629,12 @@
 
   <script>
     // ━━━━━━━━━━━━━━━━ CONFIG ━━━━━━━━━━━━━━━━━━━━━━━━━━
-    const API = 'https://shivmani-portfolio-api.onrender.com/api';
+   const PROD_API = 'https://shivmani-portfolio-api.onrender.com/api';
+const DEV_API = 'http://localhost:5001/api';
+
+const API = window.location.hostname.includes('shivmanisingh.in')
+  ? PROD_API
+  : DEV_API;
     let token = sessionStorage.getItem('adminToken');
     let currentPage = 'overview';
     let modalMode = null; // { type: 'project'|'testimonial', action: 'create'|'edit', id? }
