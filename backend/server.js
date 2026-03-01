@@ -111,7 +111,8 @@ app.get('/api/health', (req, res) => {
 
 // ── Serve frontend for all non-API routes ──────────
 app.get('*', (req, res) => {
-  if (!req.path.startsWith('/api')) {
+  // Skip if it's an API route or a file with an extension (e.g. .pdf, .png, .css)
+  if (!req.path.startsWith('/api') && !req.path.includes('.')) {
     res.sendFile(path.join(__dirname, '../index.html'));
   }
 });
