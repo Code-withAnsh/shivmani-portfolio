@@ -17,6 +17,7 @@ const connectDB = require('./config/db');
 const { Admin } = require('./models');
 const bcrypt = require('bcryptjs');
 
+
 // ── Import routes ──────────────────────────────────
 const projectRoutes = require('./routes/projectRoutes');
 const contactRoutes = require('./routes/contactRoutes');
@@ -54,12 +55,17 @@ app.use(helmet({
 
 // ── CORS ───────────────────────────────────────────
 app.use(cors({
-  origin: true, // Allow all origins explicitly for development
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  origin: [
+    "https://www.shivmanisingh.in",
+    "https://shivmanisingh.in"
+  ],
+  methods: ["GET","POST","PUT","DELETE","PATCH","OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 }));
 
+// Handle preflight requests
+app.options("*", cors());
 // ── Global rate limiter ────────────────────────────
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
