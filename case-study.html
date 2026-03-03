@@ -7,6 +7,7 @@
     <title>Case Study | Shivmani Singh</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css">
     <link rel="canonical" href="https://www.shivmanisingh.in/case-study.html" />
+    <link rel="icon" href="favicon.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
@@ -233,7 +234,14 @@
     </footer>
 
     <script>
-        const API_BASE = 'http://localhost:5005/api';
+        const API_BASE = (window.location.hostname === 'localhost' || 
+                          window.location.hostname === '127.0.0.1' || 
+                          window.location.hostname === "" || 
+                          window.location.protocol === 'file:')
+            ? 'http://localhost:5001/api' 
+            : 'https://shivmani-portfolio.onrender.com/api';
+        
+        console.log("Case Study environment detected. Using API:", API_BASE);
 
         async function loadCaseStudy() {
             const urlParams = new URLSearchParams(window.location.search);
