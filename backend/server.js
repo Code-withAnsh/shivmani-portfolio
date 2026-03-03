@@ -55,7 +55,12 @@ app.use(helmet({
 
 // ── CORS ───────────────────────────────────────────
 app.use(cors({
-  origin: true,
+  origin: (origin, callback) => {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin || origin === 'null') return callback(null, true);
+    // In dev, you could allow all, but let's be safe
+    return callback(null, true);
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,

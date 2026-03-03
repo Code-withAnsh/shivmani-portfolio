@@ -629,12 +629,14 @@
 
   <script>
     // ━━━━━━━━━━━━━━━━ CONFIG ━━━━━━━━━━━━━━━━━━━━━━━━━━
-   const PROD_API = 'https://shivmani-portfolio-api.onrender.com/api';
-const DEV_API = 'http://localhost:5001/api';
+    const API = (window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname === "" ||
+      window.location.protocol === 'file:')
+      ? 'http://localhost:5001/api'
+      : 'https://shivmani-portfolio-api.onrender.com/api';
 
-const API = window.location.hostname.includes('shivmanisingh.in')
-  ? PROD_API
-  : DEV_API;
+    console.log("Admin environment detected. Using API:", API);
     let token = sessionStorage.getItem('adminToken');
     let currentPage = 'overview';
     let modalMode = null; // { type: 'project'|'testimonial', action: 'create'|'edit', id? }
@@ -659,9 +661,11 @@ const API = window.location.hostname.includes('shivmanisingh.in')
           sessionStorage.setItem('adminToken', token);
           showDashboard();
         } else {
+          document.getElementById('loginError').textContent = data.message || 'Invalid credentials.';
           document.getElementById('loginError').style.display = 'block';
         }
-      } catch {
+      } catch (err) {
+        document.getElementById('loginError').textContent = 'Cannot reach server. Check if backend is running.';
         document.getElementById('loginError').style.display = 'block';
       }
     });

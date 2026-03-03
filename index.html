@@ -6,13 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shivmani Singh | Elite Full Stack Developer & Solution Architect</title>
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GTEH87CLL3"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GTEH87CLL3');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GTEH87CLL3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-GTEH87CLL3');
+  </script>
   <meta name="description"
     content="Elite Full Stack Developer & Solution Architect specializing in high-performance MERN applications, scalable architecture, and conversion-focused UI/UX design.">
 
@@ -47,8 +47,10 @@
   <link rel="canonical" href="https://www.shivmanisingh.in" />
   <!--Favicon-->
 
- <link rel="icon" href="/frontend/public/images/Gemini_Generated_Image_bst8aebst8aebst8-removebg-preview.png" sizes="48x48" type="image/png">
-<link rel="shortcut icon" href="/frontend/public/images/Gemini_Generated_Image_bst8aebst8aebst8-removebg-preview.png" type="image/png">
+  <link rel="icon" href="/frontend/public/images/Gemini_Generated_Image_bst8aebst8aebst8-removebg-preview.png"
+    sizes="48x48" type="image/png">
+  <link rel="shortcut icon" href="/frontend/public/images/Gemini_Generated_Image_bst8aebst8aebst8-removebg-preview.png"
+    type="image/png">
   <!-- Fonts: Premium Pairing (Poppins for Display, Inter for Body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -2669,9 +2671,14 @@
   <!-- ─────────────── SCRIPTS ─────────────── -->
   <script>
     // ━━━━━━━━━━━━━━━━━ CONFIG ━━━━━━━━━━━━━━━━━
-const API = window.location.origin === 'https://shivmanisingh.in'
-  ? 'https://shivmani-portfolio-api.onrender.com/api'
-  : 'http://localhost:5001/api';
+    const API_BASE = (window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname === "" ||
+      window.location.protocol === 'file:')
+      ? 'http://localhost:5001/api'
+      : 'https://shivmani-portfolio-api.onrender.com/api';
+
+    console.log("Environment detected. Using API:", API_BASE);
 
     // ━━━━━━━━━━━━━━━━━ LOADER ━━━━━━━━━━━━━━━━━
     window.addEventListener('load', () => {
@@ -2784,6 +2791,15 @@ const API = window.location.origin === 'https://shivmanisingh.in'
 
     // ━━━━━━━━━━━━━━━━━ PROJECTS ━━━━━━━━━━━━━━━
     const staticProjects = [
+      {
+        title: 'JRC Inter College',
+        description: 'A comprehensive School Management System featuring an event gallery, facility showcases, and real-time announcements. Built to streamline digital school presence.',
+        stack: ['Node.js', 'Express', 'MongoDB', 'HTML', 'CSS', 'JavaScript'],
+        category: 'Full Stack',
+        demo: 'https://jrcintercollege.onrender.com',
+        github: 'https://github.com/shivmani967082/jrcintercollege.git',
+        placeholder: 'JRC'
+      },
       {
         title: 'Psychopedia Library',
         description: 'A clean, responsive library website for BA Psychology students featuring curated resources, book listings, and a modern reading interface.',
@@ -2973,18 +2989,17 @@ const API = window.location.origin === 'https://shivmanisingh.in'
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, subject: document.getElementById('subject').value, message })
         });
+        const result = await res.json();
         if (res.ok) {
           showMsg('Message sent! I\'ll get back to you within 24 hours. ✦', 'success');
           contactForm.reset();
           lastSubmit = Date.now();
         } else {
-          throw new Error();
+          throw new Error(result.message || 'Submission failed');
         }
-      } catch {
-        // Fallback: simulate success for demo
-        showMsg('Message sent! I\'ll get back to you within 24 hours. ✦', 'success');
-        contactForm.reset();
-        lastSubmit = Date.now();
+      } catch (err) {
+        console.error("Submission Error Details:", err);
+        showMsg(err.message || 'Connection error. Please try again.', 'error');
       }
       submitBtn.disabled = false;
       submitBtn.textContent = 'Send Message ✦';
