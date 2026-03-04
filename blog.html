@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css">
     <link rel="canonical" href="https://www.shivmanisingh.in/blog.html" />
     <link rel="icon" href="favicon.png" type="image/png">
+    <script src="frontend/js/api-config.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
@@ -176,14 +177,7 @@
     </footer>
 
     <script>
-        const API_BASE = (window.location.hostname === 'localhost' ||
-            window.location.hostname === '127.0.0.1' ||
-            window.location.hostname === "" ||
-            window.location.protocol === 'file:')
-            ? 'http://localhost:5001/api'
-            : 'https://www.shivmanisingh.in/api';
-
-        console.log("Blog environment detected. Using API:", API_BASE);
+        // API_BASE is now loaded from frontend/js/api-config.js
 
         async function loadBlogPost() {
             const urlParams = new URLSearchParams(window.location.search);

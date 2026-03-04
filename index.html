@@ -57,6 +57,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400&display=swap"
     rel="stylesheet" />
+  <script src="frontend/js/api-config.js"></script>
   <link rel="stylesheet" href="frontend/css/style.css">
 
   <style>
@@ -2559,11 +2560,11 @@
         <form class="contact-form" id="contactForm">
           <div class="form-group">
             <label class="form-label" for="name">Full Name</label>
-            <input class="form-input" type="text" id="name" name="name" placeholder="John Doe" required />
+            <input class="form-input" type="text" id="name" name="name" placeholder="Your Name" required />
           </div>
           <div class="form-group">
             <label class="form-label" for="email">Email Address</label>
-            <input class="form-input" type="email" id="email" name="email" placeholder="john@company.com" required />
+            <input class="form-input" type="email" id="email" name="email" placeholder="your@email.com" required />
           </div>
           <div class="form-group">
             <label class="form-label" for="subject">Subject</label>
@@ -2607,14 +2608,7 @@
   <!-- ─────────────── SCRIPTS ─────────────── -->
   <script>
     // ━━━━━━━━━━━━━━━━━ CONFIG ━━━━━━━━━━━━━━━━━
-    const API_BASE = (window.location.hostname === 'localhost' ||
-      window.location.hostname === '127.0.0.1' ||
-      window.location.hostname === "" ||
-      window.location.protocol === 'file:')
-      ? 'http://localhost:5001/api'
-      : 'https://www.shivmanisingh.in/api';
-
-    console.log("Environment detected. Using API:", API_BASE);
+    // API_BASE is now loaded from frontend/js/api-config.js
 
 
     // ━━━━━━━━━━━━━━━━━ THEME TOGGLE ━━━━━━━━━━━
