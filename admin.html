@@ -635,6 +635,7 @@
     console.log("Admin environment detected. Using API:", API);
     let currentPage = 'overview';
     let modalMode = null; // { type: 'project'|'testimonial', action: 'create'|'edit', id? }
+    let token = sessionStorage.getItem('adminToken');
 
     // ━━━━━━━━━━━━━━━━ INIT ━━━━━━━━━━━━━━━━━━━━━━━━━━━
     if (token) showDashboard();
