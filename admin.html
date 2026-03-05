@@ -524,6 +524,12 @@
       font-size: 0.75rem;
     }
 
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
     @media (max-width: 768px) {
       .sidebar {
         width: 60px;
@@ -545,6 +551,24 @@
 
       .content-area {
         padding: 16px;
+      }
+
+      .top-bar {
+        padding: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      th,
+      td {
+        white-space: nowrap;
       }
     }
   </style>
@@ -778,10 +802,12 @@
         <div class="panel-title">Projects (${data.count})</div>
         <button class="btn-sm btn-gold" onclick="openProjectModal()">+ Add Project</button>
       </div>
-      <table>
-        <thead><tr><th>Title</th><th>Category</th><th>Stack</th><th>Featured</th><th>Actions</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
+      <div class="table-responsive">
+        <table>
+          <thead><tr><th>Title</th><th>Category</th><th>Stack</th><th>Featured</th><th>Actions</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
     </div>`;
     }
 
@@ -863,10 +889,12 @@
           <button class="btn-sm ${statusFilter === 'replied' ? 'btn-gold' : ''}" onclick="renderContacts('replied')">Replied</button>
         </div>
       </div>
-      <div style="overflow-x:auto"><table>
-        <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Service</th><th>Budget</th><th>Message</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table></div>
+      <div class="table-responsive">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Service</th><th>Budget</th><th>Message</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
     </div>`;
     }
 
@@ -904,10 +932,12 @@
         <div class="panel-title">Testimonials (${data.count})</div>
         <button class="btn-sm btn-gold" onclick="openTestimonialModal()">+ Add Testimonial</button>
       </div>
-      <table>
-        <thead><tr><th>Name</th><th>Role</th><th>Testimonial</th><th>Stars</th><th>Status</th><th>Actions</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
+      <div class="table-responsive">
+        <table>
+          <thead><tr><th>Name</th><th>Role</th><th>Testimonial</th><th>Stars</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
     </div>`;
     }
 
@@ -954,10 +984,12 @@
           <div class="panel-title">Case Studies (${data.count})</div>
           <button class="btn-sm btn-gold" onclick="openCaseStudyModal()">+ Add Case Study</button>
         </div>
-        <table>
-          <thead><tr><th>Title</th><th>Category</th><th>Slug</th><th>Impact</th><th>Actions</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Title</th><th>Category</th><th>Slug</th><th>Impact</th><th>Actions</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
       </div>`;
     }
 
@@ -1010,10 +1042,12 @@
           <div class="panel-title">Blog Posts (${data.count})</div>
           <button class="btn-sm btn-gold" onclick="openBlogPostModal()">+ Write Post</button>
         </div>
-        <table>
-          <thead><tr><th>Title</th><th>Category</th><th>Stats</th><th>Date</th><th>Actions</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Title</th><th>Category</th><th>Stats</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
       </div>`;
     }
 
@@ -1067,10 +1101,12 @@
         <div class="panel-header">
           <div class="panel-title">Audit Requests (${data.count})</div>
         </div>
-        <div style="overflow-x:auto"><table>
-          <thead><tr><th>Client</th><th>Email</th><th>URL</th><th>Main Concern</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table></div>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Client</th><th>Email</th><th>URL</th><th>Main Concern</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
       </div>`;
     }
 
