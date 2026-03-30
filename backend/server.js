@@ -6,14 +6,35 @@
  */
 
 require('dotenv').config();
+const mongoose = require('mongoose');
+const path = require('path');
+
+console.log('\n\n❤️❤️❤️❤️ PORTFOLIO SERVER STARTING UPDATED ❤️❤️❤️❤️\n\n');
+
+// ── 1. JSArena (js-arena-core) DB Initialization (PRIORITY) ─────
+const jsArenaUri = process.env.JSARENA_MONGO_URI;
+const jsArenaSecret = process.env.JSARENA_JWT_SECRET;
+
+console.log('💎💎💎 JSArena Environment Check 💎💎💎');
+console.log(`📡 DB URI: ${jsArenaUri ? jsArenaUri.substring(0, 25) + '...' : 'MISSING'}`);
+console.log(`🔑 JWT Secret: ${jsArenaSecret ? '*** PRESENT ***' : 'MISSING'}\n`);
+
+
+const jsArenaConn = mongoose.createConnection(jsArenaUri);
+global.jsArenaConn = jsArenaConn;
+jsArenaConn.on('connected', () => console.log('✅ JSArena DB connected (from server.js)'));
+jsArenaConn.on('error', (err) => console.error('❌ JSArena DB error:', err));
+
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
-const path = require('path');
 
+// ── 2. Primary Portfolio DB Connection ────────────────────────
 const connectDB = require('./config/db');
+
 const { Admin } = require('./models');
 const bcrypt = require('bcryptjs');
 
@@ -28,6 +49,16 @@ const caseStudyRoutes = require('./routes/caseStudyRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const auditRoutes = require('./routes/auditRoutes');
 
+// ── JSArena (js-arena-core) Routes ──────────────────
+const jsArenaAuth = require('../js-arena-core/backend/routes/auth');
+const jsArenaProblems = require('../js-arena-core/backend/routes/problems');
+const jsArenaSubmissions = require('../js-arena-core/backend/routes/submissions');
+const jsArenaUsers = require('../js-arena-core/backend/routes/users');
+const jsArenaAI = require('../js-arena-core/backend/routes/ai');
+const jsArenaAdmin = require('../js-arena-core/backend/routes/admin');
+
+
+
 // ── Connect to MongoDB and Initialize Admin ────────
 connectDB().then(async () => {
   try {
@@ -41,17 +72,22 @@ connectDB().then(async () => {
       });
       console.log('✅ Default admin account created successfully.');
     }
+
+    console.log('✅ Default admin account created successfully.');
   } catch (err) {
     console.error('Failed to initialize admin:', err);
   }
 });
 
+
 const app = express();
 
 // ── Security middleware ────────────────────────────
 app.use(helmet({
-  contentSecurityPolicy: false, // Allow CDN resources
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
 }));
+
 
 // ── CORS ───────────────────────────────────────────
 app.use(cors({
@@ -91,6 +127,11 @@ const contactLimiter = rateLimit({
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
+// ── JSArena Frontend (Native serving via root static middleware) ──
+
+
+
+
 // ── Logger (dev only) ──────────────────────────────
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -108,6 +149,18 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/case-studies', caseStudyRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/audits', auditRoutes);
+
+// ── JSArena API ────────────────────────────────────
+app.use('/api/js-arena/auth', jsArenaAuth);
+app.use('/api/js-arena/problems', jsArenaProblems);
+app.use('/api/js-arena/submissions', jsArenaSubmissions);
+app.use('/api/js-arena/users', jsArenaUsers);
+app.use('/api/js-arena/ai', jsArenaAI);
+app.use('/api/js-arena/admin', jsArenaAdmin);
+
+
+
+
 
 // ── Health check ───────────────────────────────────
 app.get('/api/health', (req, res) => {
