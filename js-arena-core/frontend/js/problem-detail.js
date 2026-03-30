@@ -49,9 +49,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function checkAIError(res, data) {
+    if (res.status === 401 && data.message.includes('token')) {
+        showToast('Please login to use this feature.', 'error');
+        setTimeout(() => window.location.href = 'login.html', 1500);
+        return true;
+    }
     if (res.status === 403 && data.message === 'GROQ_KEY_REQUIRED') {
         const modal = document.getElementById('byok-modal');
         if (modal) modal.style.display = "flex";
+        return true;
+    }
+    if (res.status === 401 && data.message.includes('Unauthorized')) {
+        showToast('Invalid Groq API Key. Please verify your token.', 'error');
+        const modal = document.getElementById('byok-modal');
+        if (modal) modal.style.display = "flex";
+        return true;
+    }
+    if (res.status === 429) {
+        showToast('API Limit Reached. Please check your Groq API limits.', 'error');
         return true;
     }
     return false;
@@ -197,6 +212,26 @@ async function submitWithAI(btnId) {
         if (res.ok) {
             // Adapt the response structure because /run returns {results} and /submit returns {executionResults}
             const evalResults = data.results || data.executionResults || data.results;
+            
+            // Check if evaluation explicitly failed due to API quota or Invalid Key inside the result text
+            const firstErr = evalResults[0]?.explanation || '';
+            if (firstErr.includes('API Limit Reached')) {
+                showToast('API Limit Reached. Please check your Groq API quota.', 'error');
+                document.getElementById('result-status').innerText = "Rate Limit ⚠️";
+                document.getElementById('result-status').style.color = "var(--accent-red)";
+                document.getElementById('result-details').innerText = firstErr;
+                return;
+            }
+            if (firstErr.includes('Unauthorized:')) {
+                showToast('Invalid Groq API Key. Please verify your token.', 'error');
+                document.getElementById('result-status').innerText = "Invalid Key 🔑";
+                document.getElementById('result-status').style.color = "var(--accent-red)";
+                document.getElementById('result-details').innerText = firstErr;
+                const modal = document.getElementById('byok-modal');
+                if (modal) modal.style.display = "flex";
+                return;
+            }
+
             const totalPassed = evalResults.filter(r => r.passed).length;
             const status = totalPassed === evalResults.length ? 'all_passed' : (totalPassed === 0 ? 'all_failed' : 'partial');
 

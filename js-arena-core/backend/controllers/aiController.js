@@ -63,7 +63,7 @@ Evaluate if the user's code logic is correct for this test case.`;
     } catch (e) {
         return {
             passed: false,
-            explanation: 'AI evaluation failed. Please try again.'
+            explanation: 'AI parsing failed. Please try again.'
         };
     }
 };
@@ -112,13 +112,20 @@ const evaluateLogic = async (problem, userCode, apiKey, limitCases = false) => {
                     error: aiResult.passed ? null : aiResult.explanation
                 };
             } catch(e) {
+                let errorMsg = 'AI Service Error. Check API Key.';
+                if (e.message.includes('429')) {
+                    errorMsg = 'API Limit Reached. Please check your Groq API quota.';
+                } else if (e.message.includes('401')) {
+                    errorMsg = 'Unauthorized: Invalid Groq API Key.';
+                }
+
                 return {
                     testCaseIndex: index,
                     isHidden: testCase.isHidden,
                     passed: false,
-                    explanation: 'AI Service Error. Check API Key.',
+                    explanation: errorMsg,
                     id: testCase._id,
-                    error: 'AI Service Error. Check API Key.'
+                    error: errorMsg
                 };
             }
         })
@@ -218,6 +225,11 @@ The student is stuck. Give a complete explanation and working solution.
 
     } catch (error) {
         console.error("Get Solution Error:", error);
+        if (error.message.includes('429')) {
+            return res.status(429).json({ message: 'API Limit Reached. Please check your Groq API quota.' });
+        } else if (error.message.includes('401')) {
+            return res.status(401).json({ message: 'Unauthorized: Invalid Groq API Key.' });
+        }
         res.status(500).json({ message: "AI evaluation failed. Please check your API key and try again." });
     }
 };
@@ -245,6 +257,11 @@ DESCRIPTION: ${problem.description}
         const response = await callGroqGeneric(prompt, userApiKey);
         res.json({ hint: response });
     } catch (error) {
+        if (error.message.includes('429')) {
+            return res.status(429).json({ message: 'API Limit Reached. Please check your Groq API quota.' });
+        } else if (error.message.includes('401')) {
+            return res.status(401).json({ message: 'Unauthorized: Invalid Groq API Key.' });
+        }
         res.status(500).json({ message: error.message });
     }
 };
@@ -270,6 +287,11 @@ ${userCode}
         const response = await callGroqGeneric(prompt, userApiKey);
         res.json({ explanation: response });
     } catch (error) {
+        if (error.message.includes('429')) {
+            return res.status(429).json({ message: 'API Limit Reached. Please check your Groq API quota.' });
+        } else if (error.message.includes('401')) {
+            return res.status(401).json({ message: 'Unauthorized: Invalid Groq API Key.' });
+        }
         res.status(500).json({ message: error.message });
     }
 };
