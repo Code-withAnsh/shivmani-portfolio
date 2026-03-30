@@ -70,6 +70,13 @@ main {
     background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
 }
 
+.hero-code pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow-x: hidden;
+}
+
 .stats-section {
     display: flex;
     justify-content: center;
@@ -162,6 +169,7 @@ footer {
 
     .hero-content {
         max-width: 100%;
+        width: 100%;
     }
 
     #hero-title {
@@ -176,8 +184,9 @@ footer {
     .hero-code {
         width: 100%;
         max-width: 100%;
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         padding: 16px;
+        box-sizing: border-box;
     }
 
     .stats-section {

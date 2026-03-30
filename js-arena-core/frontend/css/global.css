@@ -35,6 +35,8 @@
 
 html {
   background-color: var(--bg-primary);
+  overflow-x: hidden;
+  width: 100%;
 }
 
 body {
@@ -43,6 +45,7 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
+  width: 100%;
   max-width: 1920px;
   margin: 0 auto;
   position: relative;
