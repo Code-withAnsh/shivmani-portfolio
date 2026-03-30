@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Unified Portfolio and JSArena dependencies",
   "main": "backend/server.js",
+  "scripts": {
+    "preinstall": "rm -rf backend/node_modules js-arena-core/backend/node_modules backend/package-lock.json backend/package.json",
+    "start": "node backend/server.js"
+  },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.4.2",
     "bcryptjs": "^2.4.3",
