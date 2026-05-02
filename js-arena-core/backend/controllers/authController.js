@@ -113,6 +113,24 @@ const getUserProfile = async (req, res) => {
         if (user) {
             console.log('✅ User found in req.user, counting problems...');
 
+            // ── Real-time streak check ──────────────────────────
+            // If lastActiveDate was NOT today and NOT yesterday, streak is broken → reset to 0
+            if (user.currentStreak > 0 && user.lastActiveDate) {
+                const getDayStr = (d) => new Date(d).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+                const now = new Date();
+                const todayStr = getDayStr(now);
+                const yesterdayStr = getDayStr(new Date(now.getTime() - 24 * 60 * 60 * 1000));
+                const lastStr = getDayStr(user.lastActiveDate);
+
+                if (lastStr !== todayStr && lastStr !== yesterdayStr) {
+                    console.log(`🔥 Streak broken for ${user.username}: last active ${lastStr}, resetting to 0`);
+                    // Use the underlying model to save (req.user is populated without password)
+                    const User = require('../models/User');
+                    await User.findByIdAndUpdate(user._id, { currentStreak: 0 });
+                    user.currentStreak = 0;
+                }
+            }
+
             const Problem = require('../models/Problem');
             const totalProblems = await Problem.countDocuments();
             const userObj = user.toObject();

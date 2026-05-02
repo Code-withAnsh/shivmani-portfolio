@@ -132,17 +132,37 @@ problemForm.addEventListener('submit', async (e) => {
 // Load Users
 async function loadUsers(search = '') {
     try {
-        const url = new URL(`${API_BASE_URL}/admin/users`);
+        const url = new URL(`${API_BASE_URL}/admin/users`, window.location.origin);
         if (search) url.searchParams.append('search', search);
+
+        console.log('📡 Loading users from:', url.toString());
 
         const res = await fetch(url, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
             }
         });
-        const users = await res.json();
 
-        if (res.ok) {
+        console.log('📡 Users response status:', res.status);
+
+        if (!res.ok) {
+            const errorText = await res.text();
+            console.error('❌ Users API error:', res.status, errorText);
+            throw new Error(`Server returned ${res.status}: ${errorText.substring(0, 100)}`);
+        }
+
+        // Safely parse JSON
+        const text = await res.text();
+        let users;
+        try {
+            users = JSON.parse(text);
+        } catch (parseErr) {
+            console.error('❌ Failed to parse users response as JSON:', text.substring(0, 200));
+            throw new Error('Invalid response from server');
+        }
+
+        if (Array.isArray(users)) {
             usersTableBody.innerHTML = users.map(user => `
                 <tr>
                     <td>
@@ -158,7 +178,7 @@ async function loadUsers(search = '') {
                     </td>
                     <td><code style="color: var(--admin-text); background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px;">${user.mobileNumber}</code></td>
                     <td style="font-family: monospace; font-size: 0.75rem; color: var(--admin-text-muted);">
-                        ${user.password.substring(0, 20)}...
+                        ${user.password ? user.password.substring(0, 20) + '...' : '***'}
                     </td>
                     <td>
                         <div style="display: flex; gap: 8px;">
@@ -168,9 +188,18 @@ async function loadUsers(search = '') {
                     </td>
                 </tr>
             `).join('');
+
+            if (users.length === 0) {
+                usersTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:40px; color:var(--admin-text-muted);">No users found.</td></tr>';
+            }
+        } else {
+            console.error('❌ Unexpected response format:', users);
+            throw new Error('Unexpected response format from server');
         }
     } catch (err) {
-        showToast('Error loading user directory', 'error');
+        console.error('❌ loadUsers error:', err);
+        usersTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:40px; color:var(--accent-red);">Error: ${err.message}</td></tr>`;
+        showToast('Error loading user directory: ' + err.message, 'error');
     }
 }
 

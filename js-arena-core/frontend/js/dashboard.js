@@ -111,10 +111,18 @@ function renderHeatmap(year) {
         else if (count > 5 && count <= 10) level = 3;
         else if (count > 10) level = 4;
 
-        const dateDisplay = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        const tooltip = `${count} contributions on ${dateDisplay}`;
+        // Check if this day is in the past with no activity (missed day)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const isPast = d < today;
+        const cellClass = (count === 0 && isPast) ? 'heat-missed' : `heat-${level}`;
 
-        html += `<div class="heat-cell heat-${level}" data-tooltip="${tooltip}"></div>`;
+        const dateDisplay = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const tooltip = count === 0 && isPast
+            ? `No activity on ${dateDisplay}`
+            : `${count} contributions on ${dateDisplay}`;
+
+        html += `<div class="heat-cell ${cellClass}" data-tooltip="${tooltip}"></div>`;
     }
 
     container.innerHTML = html;
