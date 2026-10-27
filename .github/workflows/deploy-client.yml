@@ -1,0 +1,60 @@
+name: Deploy client
+
+# Runs on every push to main that touches the site, the backend or the lockfiles.
+# 1) builds the React client and fails the run if the build is broken
+# 2) on main, asks Render to deploy (only if the RENDER_DEPLOY_HOOK secret is set)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'client/**'
+      - 'backend/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy-client.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-client
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install client dependencies
+        run: npm ci --prefix client
+
+      - name: Build client
+        run: npm run build --prefix client
+
+      - name: Check build output
+        run: |
+          test -f client/dist/index.html
+          test -n "$(ls client/dist/assets)"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK" ]; then
+            echo "RENDER_DEPLOY_HOOK is not set. Skipping the deploy trigger (Render auto-deploy may still run)."
+            exit 0
+          fi
+          curl -fsS -X POST "$RENDER_DEPLOY_HOOK" > /dev/null
+          echo "Render deploy triggered."

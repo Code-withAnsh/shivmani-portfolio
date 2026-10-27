@@ -169,29 +169,11 @@ const TestimonialSchema = new mongoose.Schema({
   order: { type: Number, default: 0 },
 }, { timestamps: true });
 
-// ━━━━━━━━━━━━━━━━━ ADMIN MODEL ━━━━━━━━━━━━━━━━━━━
-const AdminSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: [true, 'Username is required'],
-    unique: true,
-    trim: true,
-    lowercase: true,
-  },
-  password: {
-    type: String,
-    required: [true, 'Password is required'],
-    minlength: [8, 'Password must be at least 8 characters'],
-  },
-  lastLogin: { type: Date },
-}, { timestamps: true });
-
 const Project = mongoose.model('Project', ProjectSchema);
 const Contact = mongoose.model('Contact', ContactSchema);
 const Testimonial = mongoose.model('Testimonial', TestimonialSchema);
-const Admin = mongoose.model('Admin', AdminSchema);
 const CaseStudy = mongoose.model('CaseStudy', CaseStudySchema);
 const BlogPost = mongoose.model('BlogPost', BlogPostSchema);
 const Audit = mongoose.model('Audit', AuditSchema);
 
-module.exports = { Project, Contact, Testimonial, Admin, CaseStudy, BlogPost, Audit };
+module.exports = { Project, Contact, Testimonial, CaseStudy, BlogPost, Audit };

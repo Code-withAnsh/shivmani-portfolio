@@ -1,0 +1,232 @@
+/* ───── Tech stack: tall logo cards that flip ───── */
+.tech {
+  --sans: 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+  --cw: clamp(96px, 8vw, 124px);
+  position: relative;
+  z-index: 25;
+  background: #081318;
+  color: #eef4f2;
+  padding: 16vh clamp(1.25rem, 5.5vw, 5rem) 12vh;
+  overflow-x: clip;
+}
+
+/* soft top: melts out of Projects, no hard line */
+.tech::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -14vh;
+  height: 14vh;
+  background: linear-gradient(180deg, rgba(8, 19, 24, 0) 0%, #081318 100%);
+  pointer-events: none;
+}
+
+.tech__head { margin-bottom: 9vh; }
+.tech__label { font-size: 0.74rem; letter-spacing: 0.24em; text-transform: uppercase; opacity: 0.5; margin-bottom: 1.4rem; }
+.tech__heading {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: clamp(3.4rem, 11vw, 9.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+}
+.tech__hm { display: inline-block; overflow: hidden; padding: 0.04em 0.06em 0.12em 0; }
+.tech__hw { display: inline-block; will-change: transform; }
+.tech__hw--accent { color: #8fd8dc; }
+.tech__sub { margin-top: 1.6rem; font-size: 1rem; opacity: 0.55; letter-spacing: 0.04em; }
+
+/* Category rows: label on the left, cards on the right, a rule underneath */
+.trow {
+  position: relative;
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  gap: 28px;
+  padding: 26px 0 30px;
+}
+.trow__hr {
+  grid-column: 1 / -1;
+  height: 1px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.16);
+  transform-origin: 0 50%;
+  margin-top: 22px;
+}
+
+.trow__lab { position: relative; display: flex; flex-direction: column; justify-content: center; padding-left: 20px; }
+.trow__bar { position: absolute; left: 0; top: 4px; bottom: 4px; width: 3px; background: var(--t); border-radius: 3px; transform-origin: 50% 0; }
+.trow__cnt { font-size: 0.8rem; letter-spacing: 0.2em; color: var(--t); }
+.trow__name { margin-top: 8px; font: 800 clamp(1.7rem, 2.4vw, 2.2rem)/1 var(--sans); letter-spacing: -0.02em; text-transform: uppercase; }
+.trow__sub { margin-top: 6px; font-size: 0.88rem; opacity: 0.55; }
+
+.trow__cards { position: relative; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+
+/* The card. Wrapper gets the scroll entrance (GSAP); the inner part does the flip (CSS). */
+.tcard {
+  position: relative;
+  width: var(--cw);
+  aspect-ratio: 2 / 3;
+  perspective: 900px;
+  cursor: pointer;
+  outline: none;
+  will-change: transform;
+}
+.tcard.is-flipped { z-index: 30; }
+.tcard:focus-visible .tcard__front { outline: 2px solid var(--t); outline-offset: 3px; }
+
+.tcard__inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+.tcard.is-flipped .tcard__inner { transform: rotateY(180deg); }
+
+.tcard__face {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.tcard__front {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: linear-gradient(165deg, var(--g1), var(--g2));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 26px 44px -24px #000;
+}
+.tcard__logo { width: 40%; aspect-ratio: 1; fill: var(--c); filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45)); }
+.tcard__name { font-size: 0.78rem; font-weight: 700; text-align: center; padding: 0 8px; }
+.tcard__no { position: absolute; top: 13px; left: 14px; font-size: 0.66rem; letter-spacing: 0.14em; opacity: 0.5; }
+.tcard__shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.16) 50%, transparent 60%);
+  pointer-events: none;
+}
+
+/* "Flip" cue shows on hover */
+.tcard__cue {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #081318;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.tcard__cue b { display: inline-block; margin-left: 2px; }
+@media (hover: hover) {
+  .tcard:hover .tcard__cue { opacity: 1; transform: translate(-50%, 0); }
+  .tcard:hover .tcard__front { border-color: var(--t); }
+}
+@media (hover: none) {
+  .tcard__cue { opacity: 0.9; transform: translate(-50%, 0); }
+}
+.tcard.is-flipped .tcard__cue { opacity: 0; }
+
+/* Back: bigger than the front, so there is room to read. It pops out over the neighbours. */
+.tcard__back {
+  inset: auto;
+  left: 50%;
+  top: 50%;
+  width: 235%;
+  height: 160%;
+  margin: -80% 0 0 -117.5%;
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px 26px;
+  background: var(--t);
+  color: #081318;
+  box-shadow: 0 40px 70px -26px #000;
+}
+.tcard__ghost { position: absolute; right: -14%; bottom: -16%; width: 62%; fill: rgba(8, 19, 24, 0.14); pointer-events: none; }
+.tcard__tag { font-size: 0.64rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; }
+.tcard__head { font: 800 clamp(1.2rem, 1.9vw, 1.7rem)/1.05 var(--sans); letter-spacing: -0.02em; }
+.tcard__body { font-size: 0.86rem; line-height: 1.45; position: relative; z-index: 1; font-weight: 500; }
+
+/* The label (left) and the rule */
+@media (max-width: 1000px) {
+  .trow { grid-template-columns: 1fr; gap: 18px; }
+  .trow__cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .tcard { width: auto; }
+  /* flip in place: the back is as big as the front */
+  .tcard__back { inset: 0; width: auto; height: auto; margin: 0; padding: 16px 14px; gap: 8px; }
+  .tcard__head { font-size: 1.05rem; }
+  .tcard__body { font-size: 0.78rem; line-height: 1.4; }
+  .tcard__logo { width: 34%; }
+  .tcard__name { font-size: 0.85rem; }
+}
+
+/* Footer: count and the CV button */
+.tech__foot { margin-top: 5vh; display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+.tech__count { font-size: 0.95rem; opacity: 0.55; letter-spacing: 0.06em; }
+
+.cvbtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 0.7rem 0.8rem 0.7rem 1.9rem;
+  border-radius: 999px;
+  background: #8fd8dc;
+  color: #081318;
+  font: 800 1.05rem var(--sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  overflow: hidden;
+  box-shadow: 0 24px 50px -22px rgba(143, 216, 220, 0.6);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.cvbtn__text { position: relative; z-index: 1; }
+.cvbtn__ico {
+  position: relative;
+  z-index: 1;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #081318;
+  color: #8fd8dc;
+  overflow: hidden;
+  display: block;
+}
+.cvbtn__ico i { position: absolute; inset: 0; display: grid; place-items: center; font-style: normal; font-size: 1.3rem; transition: transform 0.45s cubic-bezier(0.2, 0.75, 0.2, 1); }
+.cvbtn__ico i:last-child { transform: translateY(-100%); }
+.cvbtn__sweep {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+.cvbtn:hover { transform: translateY(-3px); box-shadow: 0 34px 60px -22px rgba(143, 216, 220, 0.7); }
+.cvbtn:hover .cvbtn__ico i:first-child { transform: translateY(100%); }
+.cvbtn:hover .cvbtn__ico i:last-child { transform: translateY(0); }
+.cvbtn:hover .cvbtn__sweep { animation: cvsweep 0.9s ease-out; }
+@keyframes cvsweep { from { left: -60%; } to { left: 130%; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .tcard__inner { transition-duration: 0.01s; }
+  .cvbtn__sweep { display: none; }
+}

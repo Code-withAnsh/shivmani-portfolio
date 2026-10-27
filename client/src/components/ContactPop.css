@@ -1,0 +1,109 @@
+/* ───── Contact popup: small, bouncy, cartoonish ───── */
+.cpop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(4, 12, 16, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.cpop__box {
+  position: relative;
+  width: min(380px, 100%);
+  padding: 26px 24px 22px;
+  border-radius: 26px;
+  background: #fff3e0;
+  color: #1a0a33;
+  box-shadow: 0 8px 0 #1a0a33, 0 30px 60px -20px #000a;
+  border: 3px solid #1a0a33;
+  overflow: hidden;
+}
+
+/* decorative bubbles, pop in one after another */
+.cpop__blob { position: absolute; border-radius: 50%; pointer-events: none; }
+.cpop__blob--a { width: 120px; height: 120px; right: -36px; top: -40px; background: #ffb347; }
+.cpop__blob--b { width: 60px; height: 60px; left: -18px; bottom: 70px; background: #8fd8dc; }
+
+.cpop__x {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2.5px solid #1a0a33;
+  background: #fff;
+  color: #1a0a33;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.25s ease;
+}
+.cpop__x:hover { transform: rotate(180deg) scale(1.08); background: #ff7a1a; color: #fff; }
+
+.cpop__eyebrow { position: relative; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #7a3b74; font-weight: 800; }
+.cpop__title { position: relative; margin-top: 4px; font: 900 30px/1 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing: -0.03em; text-transform: uppercase; }
+
+.cpop__form { position: relative; margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+.cpop__form label { display: flex; flex-direction: column; gap: 5px; }
+.cpop__form label > span { font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+.cpop__form input,
+.cpop__form textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border-radius: 14px;
+  border: 2.5px solid #1a0a33;
+  background: #fff;
+  color: #1a0a33;
+  font: 600 15px/1.4 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  outline: none;
+  resize: none;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.cpop__form input:focus,
+.cpop__form textarea:focus { box-shadow: 0 0 0 4px #ffb347; transform: translateY(-1px); }
+.cpop__form em { font-style: normal; font-size: 12px; font-weight: 700; color: #c2261d; }
+.cpop__form label:has(em) input,
+.cpop__form label:has(em) textarea { border-color: #c2261d; }
+
+.cpop__note { font-size: 12px; opacity: 0.75; font-weight: 600; }
+
+.cpop__send {
+  margin-top: 4px;
+  padding: 13px 18px;
+  border-radius: 999px;
+  border: 2.5px solid #1a0a33;
+  background: #ff7a1a;
+  color: #1a0a33;
+  font: 900 15px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 5px 0 #1a0a33;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.25s ease;
+}
+.cpop__send:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #1a0a33; }
+.cpop__send:active { transform: translateY(3px); box-shadow: 0 2px 0 #1a0a33; }
+.cpop__send:disabled { opacity: 0.8; cursor: default; }
+.cpop__send--sent { background: #8fd8dc; }
+
+.cpop__status { font-size: 13px; font-weight: 700; text-align: center; }
+.cpop__status--error { color: #c2261d; }
+.cpop__status--sent { color: #2b6b4a; }
+
+@media (max-width: 480px) {
+  .cpop__box { padding: 22px 18px 18px; }
+  .cpop__title { font-size: 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cpop__x:hover { transform: none; }
+}

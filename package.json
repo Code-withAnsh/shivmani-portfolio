@@ -4,8 +4,8 @@
   "description": "Unified Portfolio and JSArena dependencies",
   "main": "backend/server.js",
   "scripts": {
-    "preinstall": "rm -rf backend/node_modules js-arena-core/backend/node_modules backend/package-lock.json backend/package.json",
-    "start": "node backend/server.js"
+    "start": "node backend/server.js",
+    "build": "npm install --prefix client && npm run build --prefix client"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.4.2",

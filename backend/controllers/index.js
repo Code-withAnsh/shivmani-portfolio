@@ -1,6 +1,14 @@
-const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const { Project, Contact, Testimonial, Admin, CaseStudy, BlogPost, Audit } = require('../models');
+const { Project, Contact, Testimonial, CaseStudy, BlogPost, Audit } = require('../models');
+const { lockedFor, recordFail, clearFails } = require('../utils/loginGuard');
+
+// Compare two strings in constant time (hashing first, so the lengths do not leak)
+const safeEqual = (a, b) => {
+  const ha = crypto.createHash('sha256').update(a).digest();
+  const hb = crypto.createHash('sha256').update(b).digest();
+  return crypto.timingSafeEqual(ha, hb);
+};
 
 // ════════════════════════════════════════════════════
 //   PROJECT CONTROLLERS
@@ -342,66 +350,40 @@ const deleteTestimonial = async (req, res) => {
 //   AUTH CONTROLLERS
 // ════════════════════════════════════════════════════
 
-/** POST /api/auth/login */
-const login = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    if (!username || !password) {
-      return res.status(400).json({ success: false, message: 'Username and password are required' });
-    }
-
-    const admin = await Admin.findOne({ username: username.trim() });
-    if (!admin) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
-    }
-
-    const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
-    }
-
-    await Admin.findByIdAndUpdate(admin._id, { lastLogin: new Date() });
-
-    const token = jwt.sign(
-      { id: admin._id, username: admin.username },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-    );
-
-    res.json({
-      success: true,
-      token,
-      admin: { username: admin.username, lastLogin: admin.lastLogin },
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Server error during login' });
+/** POST /api/auth/login - checks against ADMIN_USERNAME / ADMIN_PASSWORD from the server .env */
+const login = (req, res) => {
+  const ip = req.ip;
+  const wait = lockedFor(ip);
+  if (wait) {
+    return res.status(429).json({ success: false, message: `Too many wrong attempts. Try again in ${wait} seconds.`, retryAfter: wait });
   }
-};
 
-/** POST /api/auth/setup - One-time admin setup (disable after use!) */
-const setupAdmin = async (req, res) => {
-  try {
-    const existing = await Admin.findOne({});
-    if (existing) {
-      return res.status(403).json({ success: false, message: 'Admin already exists. Disable this route.' });
-    }
-    const { username, password } = req.body;
-    const hashed = await bcrypt.hash(password, 12);
-    const admin = await Admin.create({ username, password: hashed });
-    res.status(201).json({ success: true, message: 'Admin account created successfully.' });
-  } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+  const { ADMIN_USERNAME, ADMIN_PASSWORD, JWT_SECRET } = process.env;
+  if (!ADMIN_USERNAME || !ADMIN_PASSWORD || !JWT_SECRET) {
+    return res.status(503).json({ success: false, message: 'Admin login is not configured on the server.' });
   }
+
+  const { username = '', password = '' } = req.body || {};
+  const userOk = safeEqual(String(username).trim(), ADMIN_USERNAME);
+  const passOk = safeEqual(String(password), ADMIN_PASSWORD);
+
+  if (!(userOk && passOk)) {
+    const left = recordFail(ip);
+    const lockNow = lockedFor(ip);
+    if (lockNow) {
+      return res.status(429).json({ success: false, message: `Too many wrong attempts. Try again in ${lockNow} seconds.`, retryAfter: lockNow });
+    }
+    return res.status(401).json({ success: false, message: 'Wrong username or password.', attemptsLeft: left });
+  }
+
+  clearFails(ip);
+  const token = jwt.sign({ username: ADMIN_USERNAME }, JWT_SECRET, { expiresIn: '8h' });
+  res.json({ success: true, token, admin: { username: ADMIN_USERNAME } });
 };
 
 /** GET /api/auth/me - Verify token */
-const getMe = async (req, res) => {
-  try {
-    const admin = await Admin.findById(req.admin.id).select('-password');
-    res.json({ success: true, data: admin });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Server error' });
-  }
+const getMe = (req, res) => {
+  res.json({ success: true, data: { username: req.admin.username } });
 };
 
 // ════════════════════════════════════════════════════
@@ -430,6 +412,6 @@ module.exports = {
   getBlogPosts, getBlogPost, createBlogPost, updateBlogPost, deleteBlogPost,
   submitAuditRequest, getAuditRequests, updateAuditStatus, deleteAuditRequest,
   getTestimonials, createTestimonial, updateTestimonial, deleteTestimonial,
-  login, setupAdmin, getMe,
+  login, getMe,
   getDashboardStats,
 };

@@ -1,0 +1,199 @@
+/* ───── Footer: one card, reference layout (ft-b) ───── */
+.ft {
+  --sans: 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+  position: relative;
+  z-index: 26;
+  background: #0F2027;
+}
+.ft::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -14vh;
+  height: 14vh;
+  background: linear-gradient(180deg, rgba(15, 32, 39, 0) 0%, #0F2027 100%);
+  pointer-events: none;
+}
+
+
+/* The card fills the whole screen: full width, full viewport height */
+.ft__card {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 640px;
+  overflow: hidden;
+  background: linear-gradient(120deg, #134E5E 0%, #4E2A4F 100%);
+  color: #eef4f2;
+  will-change: transform;
+}
+.ft__card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 20%, #ff8a3d88, transparent 40%);
+  pointer-events: none;
+}
+
+/* Left column: headline and note at the top, send button under the note, email and copyright at the bottom */
+.ft__main {
+  position: absolute;
+  left: 70px;
+  top: 70px;
+  bottom: 24px;
+  width: min(760px, 58%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.ft__kick { font-size: 13px; letter-spacing: 0.26em; text-transform: uppercase; color: #ffd08a; }
+
+.ft__title {
+  margin-top: 18px;
+  font: 900 clamp(3.6rem, 9vw, 148px)/0.86 var(--sans);
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+}
+.ft__hm { display: inline-block; overflow: hidden; padding: 0.04em 0.06em 0.12em 0; vertical-align: top; }
+.ft__hw { display: inline-block; will-change: transform; }
+.ft__hw--accent { color: #ffd08a; }
+
+.ft__lead { margin-top: 34px; width: 600px; max-width: 100%; font-size: 20px; line-height: 1.6; opacity: 0.85; }
+
+.ft__send {
+  margin-top: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px 14px 24px;
+  border-radius: 999px;
+  border: 2.5px solid #1a0a33;
+  background: #ffb347;
+  color: #1a0a33;
+  font: 900 14px var(--sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #1a0a33;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.ft__send i {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #1a0a33;
+  color: #ffb347;
+  display: grid;
+  place-items: center;
+  font-style: normal;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.ft__send:hover { transform: translateY(-3px); box-shadow: 0 9px 0 #1a0a33; }
+.ft__send:hover i { transform: translateX(4px); }
+.ft__send:active { transform: translateY(3px); box-shadow: 0 2px 0 #1a0a33; }
+
+.ft__mail {
+  margin-top: auto;
+  margin-bottom: 26px;
+  z-index: 2;
+  font: 800 40px/1 var(--sans);
+  letter-spacing: -0.02em;
+  border-bottom: 3px solid #ffd08a;
+  padding-bottom: 6px;
+  transition: color 0.25s ease;
+}
+.ft__mail:hover { color: #ffd08a; }
+
+.ft__copy { z-index: 2; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; }
+
+/* Link buttons on the right: logo, label, arrow. Same pill for every one. */
+.ft__links {
+  position: absolute;
+  right: 90px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+.ft__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 250px;
+  padding: 15px 18px 15px 20px;
+  border-radius: 999px;
+  border: 1.5px solid #ffffff55;
+  background: #ffffff10;
+  color: #eef4f2;
+  font-size: 18px;
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+.ft__logo {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  fill: #eef4f2;
+  transition: fill 0.3s ease, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.ft__label { flex: 1; text-align: left; }
+.ft__arrow {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #ffffff1f;
+  font-size: 17px;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.3s ease;
+}
+.ft__link:hover {
+  background: var(--c, #ffb347);
+  border-color: var(--c, #ffb347);
+  color: #fff;
+}
+.ft__link:hover .ft__logo { fill: #fff; transform: rotate(-8deg) scale(1.15); }
+.ft__link:hover .ft__arrow { transform: rotate(45deg); background: #ffffff33; }
+.ft__link:focus-visible { outline: 3px solid #ffd08a; outline-offset: 3px; }
+.ft__link[download] .ft__arrow,
+.ft__link[href="#top"] .ft__arrow { transform: none; }
+
+/* Avatar stays on the right, feet on the bottom edge of the card */
+.ft__avatar {
+  position: absolute;
+  right: 320px;
+  bottom: 0;
+  height: min(88svh, 900px);
+  z-index: 1;
+  filter: drop-shadow(0 30px 40px #000b);
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 1100px) {
+  .ft__avatar { right: 150px; }
+  .ft__lead { width: auto; }
+}
+/* Phone: the card still fills the screen, but grows with its content instead of a fixed height */
+@media (max-width: 860px) {
+  .ft__card { height: auto; min-height: 100svh; padding: 34px 22px 26px; }
+  .ft__main { position: relative; left: 0; top: 0; bottom: auto; width: 100%; min-height: 100%; }
+  .ft__lead { font-size: 16px; }
+  .ft__mail { font-size: 22px; display: inline-block; }
+  .ft__copy { margin-top: 16px; }
+  /* Links stack under the text in normal flow: no absolute offsets or centring transform */
+  .ft__links { position: relative; right: auto; top: auto; transform: none; width: 100%; align-items: stretch; margin-top: 28px; }
+  .ft__link { min-width: 0; width: 100%; box-sizing: border-box; }
+  .ft__avatar { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ft__link, .ft__send { transition: none; }
+}

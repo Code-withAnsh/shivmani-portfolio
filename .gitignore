@@ -1,24 +1,19 @@
-# Environment variables - NEVER commit these
+node_modules
+
+
+# Build output
+client/dist
+
+# Private notes and design references: never publish
+instructions/
+
+# Secrets: never commit
 .env
-.env.local
-.env.production
+.env.*
+!.env.example
+!backend/.env.example
 backend/.env
-
-# Dependencies
-node_modules/
-backend/node_modules/
-
-# Logs
-*.log
-npm-debug.log*
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Build outputs
-dist/
-build/
-
-# Wrangler
-.wrangler/
+*.env
+*.pem
+*.key
+credentials*.json

@@ -1,0 +1,160 @@
+/* ───── Gallery: tilted orange ribbon of photos ───── */
+.gal {
+  --sans: 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+  position: relative;
+  z-index: 25;
+  overflow: hidden;
+  background: #063a2c;
+  color: #f4fff9;
+  padding: 16vh 0 14vh;
+}
+.gal::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -14vh;
+  height: 14vh;
+  background: linear-gradient(180deg, rgba(6, 58, 44, 0) 0%, #063a2c 100%);
+  pointer-events: none;
+}
+
+.gal__head { position: relative; padding: 0 clamp(1.25rem, 5vw, 5rem); z-index: 2; }
+.gal__kick { font-size: 0.74rem; letter-spacing: 0.26em; text-transform: uppercase; color: #a6f0cf; }
+.gal__title {
+  margin-top: 1.2rem;
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(3.4rem, 10vw, 8.6rem);
+  line-height: 0.88;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+}
+.gal__hm { display: inline-block; overflow: hidden; padding: 0.06em 0.08em 0.14em 0; vertical-align: top; }
+.gal__hw { display: inline-block; will-change: transform; }
+.gal__hw--serif { font-family: Georgia, 'Iowan Old Style', serif; font-style: italic; font-weight: 400; text-transform: none; letter-spacing: -0.03em; color: #ffd08a; }
+.gal__lead { margin-top: 1rem; max-width: 36rem; font-size: 1.05rem; line-height: 1.7; color: #f4fff9; opacity: 0.92; }
+.gal__note { margin-top: 1.4rem; max-width: 30rem; font-size: 0.98rem; line-height: 1.6; color: #d7f7e8; opacity: 0.8; }
+
+/* Stage: same box as the approved mockup (band 400px tall, tilted -5deg, bleeding 60px past both edges) */
+.gal__stage {
+  position: relative;
+  height: 560px;
+  margin-top: 2vh;
+  cursor: grab;
+  touch-action: pan-y; /* the page still scrolls up and down on phones; sideways drags belong to the ribbon */
+  user-select: none;
+  -webkit-user-select: none;
+}
+.gal__stage.is-drag { cursor: grabbing; }
+.gal__stage.is-drag .gal__ph:hover { transform: none; box-shadow: 0 20px 40px -18px #0009; }
+.gal__stage.is-drag .gal__track { transition: none; }
+
+.gal__band {
+  position: absolute;
+  left: -60px;
+  right: -60px;
+  top: 70px;
+  height: 400px;
+  transform: rotate(-5deg);
+  background: linear-gradient(90deg, #ff7a1a, #ffb347);
+  box-shadow: 0 40px 80px -30px #0008;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.gal__track { display: flex; align-items: center; gap: 18px; width: max-content; will-change: transform; }
+
+/* Card sizes from the mockup: wide 380x220, tall 230x300, normal 300x220 (border included) */
+.gal__ph {
+  position: relative;
+  flex: none;
+  margin: 0;
+  outline: none;
+  transform-origin: 50% 50%;
+  transition: transform 0.7s cubic-bezier(0.2, 0.75, 0.2, 1), box-shadow 0.7s ease;
+}
+.gal__ph--wide { width: 380px; height: 220px; }
+.gal__ph--tall { width: 230px; height: 300px; }
+.gal__ph--normal { width: 300px; height: 220px; }
+
+.gal__frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 6px solid #063a2c;
+  background: #063a2c;
+}
+.gal__ph--cert .gal__frame { background: #fff; }
+
+.gal__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.9s cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+.gal__ph--cert .gal__frame img { object-fit: contain; }
+
+/* Hover: the whole card grows in place past its original size and overlaps its neighbours, like the tech stack flip.
+   Colour is always on, so the hover only changes size, frame and caption. */
+.gal__ph:hover,
+.gal__ph:focus-visible {
+  transform: scale(1.85);
+  z-index: 10;
+  box-shadow: 0 50px 90px -30px #000c;
+}
+.gal__ph:hover .gal__frame,
+.gal__ph:focus-visible .gal__frame { border-color: #fff3e0; border-radius: 10px; }
+.gal__ph:hover .gal__frame img,
+.gal__ph:focus-visible .gal__frame img { transform: scale(1.04); }
+.gal__ph:hover .gal__cap,
+.gal__ph:focus-visible .gal__cap { opacity: 1; transform: translateY(0); }
+
+.gal__cap {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  padding: 7px 11px;
+  border-radius: 6px;
+  background: #041813d9;
+  color: #fff3e0;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+
+.gal__count {
+  position: relative;
+  margin-top: 4vh;
+  padding: 0 clamp(1.25rem, 5vw, 5rem);
+  text-align: right;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #a6f0cf;
+}
+
+@media (max-width: 760px) {
+  .gal__stage { height: 360px; }
+  .gal__band { top: 40px; height: 250px; left: -40px; right: -40px; }
+  .gal__track { gap: 12px; }
+  .gal__ph--wide { width: 230px; height: 135px; }
+  .gal__ph--tall { width: 140px; height: 185px; }
+  .gal__ph--normal { width: 185px; height: 135px; }
+  .gal__frame { border-width: 4px; }
+  .gal__cap { font-size: 9px; }
+  .gal__ph:hover, .gal__ph:focus-visible { transform: scale(1.6); }
+  .gal__stage { touch-action: pan-y; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gal__frame img, .gal__ph { transition: none; }
+}
