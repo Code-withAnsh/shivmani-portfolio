@@ -167,24 +167,31 @@
   opacity: 0.75;
 }
 
-/* Phone: headline on top, the tags hang in a column on the right, the paragraph sits at the bottom.
-   Positions are forced here because the tags carry inline positions from the desktop layout. */
+/* Phone: a normal scrolling page. No pin, no string, no absolute positions, so nothing can overlap. */
 @media (max-width: 760px) {
-  .about__label { top: 96px; }
-  .about__display { top: 20%; font-size: clamp(2.2rem, 10.5vw, 2.8rem); width: calc(100% - 48px); }
-  .about__body { bottom: 6vh; left: 24px; right: 24px; max-width: none; font-size: 0.95rem; }
-  .about__count { right: 24px; top: 9vh; bottom: auto; align-items: flex-end; }
-  .about__count .about__num { font-size: 3.2rem; }
-  .about__tag-wrap { left: 46% !important; white-space: normal; max-width: 52vw; }
-  .about__tag-wrap:nth-of-type(1) { top: 40% !important; }
-  .about__tag-wrap:nth-of-type(2) { top: 46% !important; }
-  .about__tag-wrap:nth-of-type(3) { top: 52% !important; }
-  .about__tag-wrap:nth-of-type(4) { top: 58% !important; }
-  .about__tag-wrap:nth-of-type(5) { top: 64% !important; }
-  .about__tag { white-space: normal; font-size: 0.85rem; padding: 8px 12px; }
-  .about__tag--xl { font-size: 1.15rem; padding: 10px 14px; }
-  .about__tag--lg { font-size: 0.95rem; }
-  .about__tag--sm { font-size: 0.7rem; }
+  .about {
+    height: auto;
+    min-height: 100svh;
+    overflow: visible;
+    padding: 120px 24px 96px;
+  }
+  .about__label { position: static; margin-bottom: 22px; }
+  .about__display {
+    position: static;
+    width: auto;
+    font-size: clamp(2.3rem, 10.5vw, 3.2rem);
+    line-height: 1.05;
+  }
+  .about__body { position: static; max-width: none; margin-top: 28px; font-size: 1rem; line-height: 1.65; }
+  .about__tags { position: static; inset: auto; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  .about__string { display: none; }
+  .about__tag-wrap { position: static !important; left: auto !important; top: auto !important; transform: none !important; white-space: normal; }
+  .about__tag { white-space: normal; font-size: 0.9rem; padding: 9px 14px; }
+  .about__tag--xl { font-size: 1.15rem; padding: 10px 16px; }
+  .about__tag--lg { font-size: 1rem; }
+  .about__tag--sm { font-size: 0.72rem; }
+  .about__count { position: static; align-items: flex-start; margin-top: 40px; }
+  .about__count .about__num { font-size: 3.6rem; }
 }
 
 /* Tablet: the tags stay in the right half and wrap, so none of them runs off the screen */

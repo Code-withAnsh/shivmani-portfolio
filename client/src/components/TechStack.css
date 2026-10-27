@@ -166,8 +166,10 @@
 /* The label (left) and the rule */
 @media (max-width: 1000px) {
   .trow { grid-template-columns: 1fr; gap: 18px; }
-  .trow__cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-  .tcard { width: auto; }
+  /* same card size as desktop, in one row that swipes sideways */
+  .trow__cards { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; padding: 6px 2px 14px; scrollbar-width: none; }
+  .trow__cards::-webkit-scrollbar { display: none; }
+  .tcard { flex: 0 0 auto; scroll-snap-align: start; }
   /* flip in place: the back is as big as the front */
   .tcard__back { inset: 0; width: auto; height: auto; margin: 0; padding: 16px 14px; gap: 8px; }
   .tcard__head { font-size: 1.05rem; }
@@ -230,3 +232,8 @@
   .tcard__inner { transition-duration: 0.01s; }
   .cvbtn__sweep { display: none; }
 }
+
+/* Hover: the other categories step back while one is previewed */
+.tech__rows.is-hovering .trow:not(.is-active) .trow__lab,
+.tech__rows.is-hovering .trow:not(.is-active) .trow__cards { opacity: 0.35; }
+.trow__lab, .trow__cards { transition: opacity 0.35s ease; }

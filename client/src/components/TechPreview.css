@@ -1,0 +1,81 @@
+/* ───── Tech stack hover preview: a tall reveal panel that follows the pointer ───── */
+.tprev {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  will-change: transform;
+}
+.tprev.is-on { opacity: 1; }
+
+.tprev__panel {
+  position: relative;
+  height: clamp(240px, 30vh, 380px);
+  aspect-ratio: 3 / 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: linear-gradient(160deg, var(--g1), var(--g2));
+  color: #eef4f2;
+  box-shadow: 0 40px 80px -30px #000;
+  overflow: hidden;
+  animation: tprev-reveal 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* The panel opens from the bottom, like a shutter, every time the content changes */
+@keyframes tprev-reveal {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+.tprev__no {
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.tprev__logo {
+  width: 96px;
+  height: 96px;
+  margin: auto;
+  fill: var(--c);
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+}
+
+.tprev__grid {
+  margin: auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.tprev__grid svg { width: 100%; aspect-ratio: 1; }
+
+.tprev__name {
+  display: block;
+  font: 800 1.5rem/1.05 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.tprev__text { margin-top: 8px; font-size: 0.82rem; line-height: 1.45; opacity: 0.85; }
+
+/* Phones: a card in the centre of the screen, showing the row in view. It does not follow a finger. */
+.tprev--dock {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.tprev--dock .tprev__panel { padding: 22px 20px; }
+.tprev--dock .tprev__grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.tprev--dock .tprev__logo { width: 72px; height: 72px; }
+.tprev--dock .tprev__name { font-size: 1.3rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tprev__panel { animation: none; }
+}

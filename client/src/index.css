@@ -63,6 +63,24 @@ a { color: inherit; text-decoration: none; }
 
 .intro__video--on { opacity: 1; }
 
+/* Shown while the film is waiting for more data (slow connection) */
+.intro__spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border: 3px solid #ffffff33;
+  border-top-color: #ffd08a;
+  border-radius: 50%;
+  z-index: 5;
+  pointer-events: none;
+  animation: intro-spin 0.9s linear infinite;
+}
+@keyframes intro-spin { to { transform: rotate(360deg); } }
+.hold-button:disabled { cursor: progress; opacity: 0.8; }
+
 /* Slow push-in once the page starts to appear, so the frozen last frame still feels alive */
 .intro--reveal .intro__video {
   animation: drift 28s ease-out forwards;

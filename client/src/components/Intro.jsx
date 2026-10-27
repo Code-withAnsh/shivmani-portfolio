@@ -8,6 +8,8 @@ import { scrambleTo } from '../lib/scramble.js';
 const HOLD_MS = 2000;
 // The page UI starts animating this many seconds before the video ends, so there is no hard cut.
 const REVEAL_BEFORE_END_S = 1.8;
+// If the video is not ready after this long (slow connection), skip the intro and show the landing page
+const READY_TIMEOUT_MS = 8000;
 
 // Phases: idle -> holding (press) -> clouds (clouds close over the dust) -> playing (clouds part, video plays)
 // -> ended (video stays frozen on its last frame and becomes the landing page background)
@@ -22,6 +24,10 @@ export default function Intro({ onReveal, onStart }) {
   const holdRef = useRef(0);
   const labelRef = useRef(null);
   const [cloudsDone, setCloudsDone] = useState(false);
+  // The press-and-hold only starts once the video can play through; 'stalled' shows a spinner mid-film
+  const [ready, setReady] = useState(false);
+  const readyRef = useRef(false);
+  const [stalled, setStalled] = useState(false);
 
   const reveal = () => {
     if (revealedRef.current) return;
@@ -30,9 +36,14 @@ export default function Intro({ onReveal, onStart }) {
     onReveal();
   };
 
+  const markReady = () => {
+    readyRef.current = true;
+    setReady(true);
+  };
+
   // Hold timer: measures how long the pointer has been down.
   const startHold = (e) => {
-    if (phase !== 'idle') return;
+    if (phase !== 'idle' || !readyRef.current) return;
     e.currentTarget.setPointerCapture?.(e.pointerId);
     unlockAudio();
     startDrone();
@@ -89,6 +100,16 @@ export default function Intro({ onReveal, onStart }) {
     if (v.duration - v.currentTime <= REVEAL_BEFORE_END_S) reveal();
   };
 
+  // Already cached, or the video is still loading after READY_TIMEOUT_MS: the intro gives way to the landing page
+  useEffect(() => {
+    const v = videoRef.current;
+    if (v && v.readyState >= 4) markReady();
+    const timer = setTimeout(() => {
+      if (!readyRef.current) reveal();
+    }, READY_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(
     () => () => {
       cancelAnimationFrame(frameRef.current);
@@ -100,7 +121,7 @@ export default function Intro({ onReveal, onStart }) {
   const showHold = phase === 'idle' || phase === 'holding' || phase === 'clouds';
   const count = progress < 0.34 ? '3' : progress < 0.67 ? '2' : '1';
   const onHoverLabel = () => {
-    if (phase === 'idle' && labelRef.current) scrambleTo(labelRef.current, 'HOLD', 450);
+    if (phase === 'idle' && ready && labelRef.current) scrambleTo(labelRef.current, 'HOLD', 450);
   };
 
   return (
@@ -113,10 +134,14 @@ export default function Intro({ onReveal, onStart }) {
         ref={videoRef}
         className={`intro__video ${phase === 'playing' || phase === 'ended' ? 'intro__video--on' : ''}`}
         src={asset('videos/intro.mp4')}
+        poster={asset('images/intro-poster.webp')}
         preload="auto"
         playsInline
         onTimeUpdate={handleTimeUpdate}
         onEnded={() => setPhase('ended')}
+        onCanPlayThrough={markReady}
+        onWaiting={() => setStalled(true)}
+        onPlaying={() => setStalled(false)}
         onError={reveal}
       />
 
@@ -132,6 +157,7 @@ export default function Intro({ onReveal, onStart }) {
             <button
               type="button"
               className="hold-button"
+              disabled={!ready}
               onPointerDown={startHold}
               onPointerUp={cancelHold}
               onPointerLeave={cancelHold}
@@ -164,7 +190,7 @@ export default function Intro({ onReveal, onStart }) {
                 <line x1="28" y1="120" x2="212" y2="120" className="hold-button__cross" />
               </svg>
               {phase === 'idle' ? (
-                <span ref={labelRef} className="hold-button__label">HOLD</span>
+                <span ref={labelRef} className="hold-button__label">{ready ? 'HOLD' : 'LOADING'}</span>
               ) : (
                 <span key={count} className="hold-button__count">{count}</span>
               )}
@@ -177,6 +203,8 @@ export default function Intro({ onReveal, onStart }) {
           </footer>
         </>
       )}
+
+      {stalled && phase === 'playing' && <div className="intro__spinner" aria-hidden="true" />}
 
       {(phase === 'clouds' || phase === 'playing') && !cloudsDone && (
         <CloudWipe

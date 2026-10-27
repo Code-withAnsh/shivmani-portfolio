@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { asset } from '../lib/asset.js';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { STACK } from '../data/techstack.js';
+import TechPreview from './TechPreview.jsx';
 import './TechStack.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -11,7 +12,7 @@ const pad = (n) => String(n).padStart(2, '0');
 const TOTAL = STACK.reduce((n, g) => n + g.items.length, 0);
 
 // One tall card. Hover shows a "Flip" cue; click or tap flips it to a short note about what I do with the tool.
-function TCard({ item, no }) {
+function TCard({ item, no, onEnter, onLeave }) {
   const [flipped, setFlipped] = useState(false);
   const toggle = () => setFlipped((f) => !f);
   return (
@@ -23,7 +24,12 @@ function TCard({ item, no }) {
       aria-label={`${item.name}: ${flipped ? 'show logo' : 'what I do with it'}`}
       onClick={toggle}
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), toggle())}
-      onPointerLeave={(e) => e.pointerType === 'mouse' && setFlipped(false)}
+      onPointerEnter={(e) => e.pointerType === 'mouse' && onEnter?.()}
+      onPointerLeave={(e) => {
+        if (e.pointerType !== 'mouse') return;
+        setFlipped(false);
+        onLeave?.();
+      }}
       style={{ '--c': item.color }}
     >
       <div className="tcard__inner">
@@ -75,6 +81,24 @@ const ENTRANCE = {
 
 export default function TechStack() {
   const rootRef = useRef(null);
+  // Hover preview: the group (category row) or the tool (card) under the pointer. On phones, the row in view.
+  const [hover, setHover] = useState(null);
+  const fine = useMemo(() => window.matchMedia('(hover: hover) and (pointer: fine)').matches, []);
+
+  useEffect(() => {
+    if (fine) return undefined;
+    const inView = new Set();
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => (en.isIntersecting ? inView.add(en.target.dataset.group) : inView.delete(en.target.dataset.group)));
+        const id = STACK.map((g) => g.id).find((gid) => inView.has(gid));
+        setHover(id ? { group: STACK.find((g) => g.id === id) } : null);
+      },
+      { rootMargin: '-42% 0px -42% 0px' }
+    );
+    document.querySelectorAll('.trow').forEach((row) => io.observe(row));
+    return () => io.disconnect();
+  }, [fine]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -122,33 +146,52 @@ export default function TechStack() {
   let no = 0;
   return (
     <section className="tech" id="techstack" ref={rootRef}>
+      <TechPreview active={hover} mode={fine ? "float" : "dock"} />
       <header className="tech__head">
         <p className="tech__label tech__head-rise">[ Tech stack ]</p>
         <h2 className="tech__heading" aria-label="Built with">
-          <span className="tech__hm"><span className="tech__hw">Built</span></span>{' '}
-          <span className="tech__hm"><span className="tech__hw tech__hw--accent">with</span></span>
+          <span className="tech__hm">
+            <span className="tech__hw">Built</span>
+          </span>{" "}
+          <span className="tech__hm">
+            <span className="tech__hw tech__hw--accent">with</span>
+          </span>
         </h2>
         <p className="tech__sub tech__head-rise">Hover a card and flip it.</p>
       </header>
 
-      <div className="tech__rows">
+      <div className={`tech__rows ${hover && fine ? "is-hovering" : ""}`}>
         {STACK.map((g) => (
           <section
-            className="trow"
+            className={`trow ${hover?.group?.id === g.id ? "is-active" : ""}`}
             key={g.id}
             data-group={g.id}
-            style={{ '--t': g.tint, '--g1': g.bg[0], '--g2': g.bg[1] }}
+            onPointerEnter={(e) =>
+              e.pointerType === "mouse" && setHover({ group: g })
+            }
+            onPointerLeave={(e) => e.pointerType === "mouse" && setHover(null)}
+            style={{ "--t": g.tint, "--g1": g.bg[0], "--g2": g.bg[1] }}
           >
             <div className="trow__lab">
               <span className="trow__bar" aria-hidden="true" />
-              <span className="trow__cnt trow__lab-rise">{pad(g.items.length)}</span>
+              <span className="trow__cnt trow__lab-rise">
+                {pad(g.items.length)}
+              </span>
               <h3 className="trow__name trow__lab-rise">{g.name}</h3>
               <p className="trow__sub trow__lab-rise">{g.sub}</p>
             </div>
             <div className="trow__cards">
               {g.items.map((it) => {
                 no += 1;
-                return <TCard item={it} no={no} key={it.id} />;
+                return (
+                  <TCard
+                    item={it}
+                    no={no}
+                    key={it.id}
+                    onEnter={() => setHover({ group: g, item: it })}
+                    onLeave={() => setHover({ group: g })}
+                  />
+                );
               })}
             </div>
             <hr className="trow__hr" />
@@ -157,10 +200,19 @@ export default function TechStack() {
       </div>
 
       <div className="tech__foot">
-        <span className="tech__count">{TOTAL} tools · {STACK.length} groups</span>
-        <a className="cvbtn" href={asset('cv/Shivmani-Singh-CV.pdf')} download="Shivmani-Singh-CV.pdf">
+        <span className="tech__count">
+          {TOTAL} tools · {STACK.length} groups
+        </span>
+        <a
+          className="cvbtn"
+          href={asset("cv/Shivmani_Singh_CV.docx")}
+          download="Shivmani-Singh-CV.pdf"
+        >
           <span className="cvbtn__text">Download CV</span>
-          <span className="cvbtn__ico" aria-hidden="true"><i>↓</i><i>↓</i></span>
+          <span className="cvbtn__ico" aria-hidden="true">
+            <i>↓</i>
+            <i>↓</i>
+          </span>
           <span className="cvbtn__sweep" aria-hidden="true" />
         </a>
       </div>

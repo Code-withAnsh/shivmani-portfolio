@@ -35,70 +35,108 @@ export default function About() {
   const wrapRefs = useRef([]);
 
   useEffect(() => {
+    let mm;
     const ctx = gsap.context(() => {
-      // Entrance: words rise from a mask, one after another, then the rest follows
-      const intro = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: '+=160%',
-          scrub: 0.8,
-          pin: true,
-          anticipatePin: 1,
-        },
+      mm = gsap.matchMedia();
+
+      // Desktop: the section is pinned and scrubbed by scroll, with the tags swinging on the string
+      mm.add('(min-width: 761px)', () => {
+        // Entrance: words rise from a mask, one after another, then the rest follows
+        const intro = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top top',
+            end: '+=160%',
+            scrub: 0.8,
+            pin: true,
+            anticipatePin: 1,
+          },
+        });
+
+        intro
+          .from('.about__word', { yPercent: 115, rotate: 3, opacity: 0, stagger: 0.12, ease: 'power3.out', duration: 1 }, 0)
+          .from('.about__label, .about__body', { opacity: 0, y: 24, stagger: 0.15, ease: 'power2.out', duration: 0.8 }, 0.3)
+          // Tags float in at their own angles, each one a little different, like pinned posters
+          .from(
+            '.about__tag',
+            {
+              opacity: 0,
+              y: 90,
+              scale: 0.86,
+              rotate: (i) => TAGS[i].rot * 2.5,
+              stagger: 0.14,
+              ease: 'power3.out',
+              duration: 1,
+            },
+            0.45
+          )
+          .to(
+            '.about__tag',
+            { rotate: (i) => TAGS[i].rot, ease: 'power1.out', duration: 0.6, stagger: 0.05 },
+            1.5
+          )
+          // Facts count up, as the section settles
+          .add(() => {
+            const el = countRef.current;
+            if (!el) return;
+            const v = { n: 0 };
+            gsap.to(v, {
+              n: 3,
+              duration: 1.2,
+              ease: 'power2.out',
+              onUpdate: () => {
+                el.textContent = `${Math.round(v.n)}+`;
+              },
+            });
+          }, 0.9);
+
+        // Gentle parallax on the big display words, so the page keeps moving while pinned
+        gsap.to('.about__display', {
+          yPercent: -18,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top top',
+            end: '+=160%',
+            scrub: 0.8,
+          },
+        });
+
       });
 
-      intro
-        .from('.about__word', { yPercent: 115, rotate: 3, opacity: 0, stagger: 0.12, ease: 'power3.out', duration: 1 }, 0)
-        .from('.about__label, .about__body', { opacity: 0, y: 24, stagger: 0.15, ease: 'power2.out', duration: 0.8 }, 0.3)
-        // Tags float in at their own angles, each one a little different, like pinned posters
-        .from(
-          '.about__tag',
-          {
-            opacity: 0,
-            y: 90,
-            scale: 0.86,
-            rotate: (i) => TAGS[i].rot * 2.5,
-            stagger: 0.14,
-            ease: 'power3.out',
-            duration: 1,
-          },
-          0.45
-        )
-        .to(
-          '.about__tag',
-          { rotate: (i) => TAGS[i].rot, ease: 'power1.out', duration: 0.6, stagger: 0.05 },
-          1.5
-        )
-        // Facts count up, as the section settles
-        .add(() => {
-          const el = countRef.current;
-          if (!el) return;
-          const v = { n: 0 };
-          gsap.to(v, {
+      // Phone: no pin. Each piece is tied to the scroll position, so it moves with the finger, in the same order as desktop.
+      mm.add('(max-width: 760px)', () => {
+        const count = { n: 0 };
+        const tl = gsap.timeline({
+          defaults: { ease: 'power2.out' },
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 90%', end: 'bottom 60%', scrub: 0.6 },
+        });
+        tl.fromTo('.about__label', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, 0)
+          .fromTo('.about__word', { yPercent: 115, opacity: 0 }, { yPercent: 0, opacity: 1, stagger: 0.3, duration: 1.4 }, 0.2)
+          .fromTo('.about__body', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1 }, 1.6)
+          .fromTo('.about__tag', { opacity: 0, y: 44, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, stagger: 0.35, duration: 1 }, 2.4)
+          .to(count, {
             n: 3,
-            duration: 1.2,
-            ease: 'power2.out',
+            duration: 1.4,
+            ease: 'none',
             onUpdate: () => {
-              el.textContent = `${Math.round(v.n)}+`;
+              if (countRef.current) countRef.current.textContent = `${Math.round(count.n)}+`;
             },
-          });
-        }, 0.9);
+          }, 3.8);
 
-      // Gentle parallax on the big display words, so the page keeps moving while pinned
-      gsap.to('.about__display', {
-        yPercent: -18,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: '+=160%',
-          scrub: 0.8,
-        },
+        // The big headline drifts up slower than the page, so it feels layered on the paragraph below
+        gsap.to('.about__display', {
+          y: -36,
+          ease: 'none',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top bottom', end: 'bottom top', scrub: true },
+        });
       });
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      mm?.revert();
+      ctx.revert();
+    };
   }, []);
 
   // Elastic string through the tags. Points are simulated with springs; the pointer pulls and pushes them.
@@ -108,6 +146,7 @@ export default function About() {
     const svg = path.ownerSVGElement;
     const wraps = wrapRefs.current;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const mobileMQ = window.matchMedia('(max-width: 760px)');
 
     let nodes = []; // { x, y, vx, vy, rx, ry, tag } where tag is the tag index, or -1 for plain string points
     let links = []; // [a, b, restLength]
@@ -124,8 +163,7 @@ export default function About() {
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
 
       const attach = wraps.map((w) => ({ x: w.offsetLeft + w.offsetWidth / 2, y: w.offsetTop }));
-      // On phones the string drops from the top-right corner, so it stays clear of the headline
-      anchor = { x: W < 760 ? W - 14 : attach[0].x + W * 0.04, y: -10 };
+      anchor = { x: attach[0].x + W * 0.04, y: -10 };
       const chain = [anchor, ...attach];
 
       nodes = [];
@@ -156,6 +194,7 @@ export default function About() {
 
       // Tags start where they belong, with no leftover offsets from a previous layout
       wraps.forEach((w) => (w.style.transform = ''));
+      if (mobileMQ.matches) nodes = [];
     };
 
     const onMove = (e) => {
@@ -173,6 +212,11 @@ export default function About() {
     };
 
     const step = () => {
+      // On phones the string is hidden and the tags stay in the normal flow, so there is nothing to simulate
+      if (mobileMQ.matches) {
+        raf = requestAnimationFrame(step);
+        return;
+      }
       t += 1;
 
       // Mouse: points near the pointer get dragged along its movement, and nudged away from it

@@ -20,23 +20,45 @@ export default function Footer() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    let mm;
     const ctx = gsap.context(() => {
-      // The card rises from below while the footer enters the screen, then settles in place
-      gsap.fromTo(cardRef.current, { y: 140, opacity: 0.4 }, {
-        y: 0,
-        opacity: 1,
-        ease: 'none',
-        scrollTrigger: { trigger: rootRef.current, start: 'top 95%', end: 'top 35%', scrub: 0.8 },
+      mm = gsap.matchMedia();
+
+      // Desktop: the card rises from below while the footer enters the screen, then settles in place
+      mm.add('(min-width: 861px)', () => {
+        gsap.fromTo(cardRef.current, { y: 140, opacity: 0.4 }, {
+          y: 0,
+          opacity: 1,
+          ease: 'none',
+          scrollTrigger: { trigger: rootRef.current, start: 'top 95%', end: 'top 35%', scrub: 0.8 },
+        });
+        gsap.from('.ft__hw', { yPercent: 115, stagger: 0.09, duration: 1.1, ease: 'power4.out', scrollTrigger: { trigger: cardRef.current, start: 'top 75%' } });
+        gsap.from('.ft__rise', { y: 28, opacity: 0, stagger: 0.08, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: cardRef.current, start: 'top 65%' } });
+        gsap.fromTo('.ft__link', { x: 60, opacity: 0 }, { x: 0, opacity: 1, stagger: 0.09, duration: 0.8, ease: 'back.out(1.4)', scrollTrigger: { trigger: cardRef.current, start: 'top 60%' } });
+        gsap.from('.ft__avatar', { x: 120, opacity: 0, duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: cardRef.current, start: 'top 65%' } });
+        // Avatar bobs gently once it has landed
+        gsap.to('.ft__avatar', { y: -10, duration: 2.2, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.3 });
       });
 
-      gsap.from('.ft__hw', { yPercent: 115, stagger: 0.09, duration: 1.1, ease: 'power4.out', scrollTrigger: { trigger: cardRef.current, start: 'top 75%' } });
-      gsap.from('.ft__rise', { y: 28, opacity: 0, stagger: 0.08, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: cardRef.current, start: 'top 65%' } });
-      gsap.fromTo('.ft__link', { x: 60, opacity: 0 }, { x: 0, opacity: 1, stagger: 0.09, duration: 0.8, ease: 'back.out(1.4)', scrollTrigger: { trigger: cardRef.current, start: 'top 60%' } });
-      gsap.from('.ft__avatar', { x: 120, opacity: 0, duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: cardRef.current, start: 'top 65%' } });
-      // Avatar bobs gently once it has landed
-      gsap.to('.ft__avatar', { y: -10, duration: 2.2, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.3 });
+      // Phone: everything is tied to the scroll position. The card lifts in, the avatar rises after it,
+      // the headline words and the buttons follow one by one, and it all settles as the footer reaches the middle of the screen.
+      mm.add('(max-width: 860px)', () => {
+        // One scrubbed timeline across the whole footer pass. It ends when the page bottom is reached,
+        // so every piece (including the links at the very bottom) always finishes, even on a tall phone card.
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: rootRef.current, start: 'top 100%', end: 'bottom bottom', scrub: 0.6 },
+        });
+        tl.fromTo(cardRef.current, { y: 120, opacity: 0.3, scale: 0.97 }, { y: 0, opacity: 1, scale: 1, duration: 1, ease: 'none' }, 0)
+          .fromTo('.ft__avatar', { y: 90, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 1, ease: 'none' }, 0.1)
+          .fromTo('.ft__hw', { yPercent: 115 }, { yPercent: 0, stagger: 0.2, duration: 0.6, ease: 'none' }, 0.3)
+          .fromTo('.ft__rise', { y: 26, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.25, duration: 0.5, ease: 'none' }, 0.4)
+          .fromTo('.ft__link', { y: 22, opacity: 0, scale: 0.85 }, { y: 0, opacity: 1, scale: 1, stagger: 0.12, duration: 0.5, ease: 'none' }, 0.6);
+      });
     }, rootRef);
-    return () => ctx.revert();
+    return () => {
+      mm?.revert();
+      ctx.revert();
+    };
   }, []);
 
   // Magnetic link buttons: each one leans toward the pointer
@@ -93,7 +115,8 @@ export default function Footer() {
           {links.map((l) => (
             <a
               key={l.key}
-              className="ft__link"
+              className={`ft__link ${l.path ? 'ft__link--icon' : ''}`}
+              aria-label={l.path ? l.label : undefined}
               href={l.href}
               target={l.href.startsWith("http") ? "_blank" : undefined}
               rel="noreferrer"
