@@ -1,6 +1,7 @@
+import { asset } from '../lib/asset.js';
 // Gallery photos. Files live in client/public/gallery (converted to WebP, 1400px max).
 // `caption` is shown on hover. Captions describe the photo; no event names or dates were confirmed yet.
-const g = (n, caption, extra = {}) => ({ src: `/gallery/${n}.webp`, caption, ...extra });
+const g = (n, caption, extra = {}) => ({ src: asset(`gallery/${n}.webp`), caption, ...extra });
 
 export const GALLERY = [
   g('01', 'Campus, first year', { size: 'wide' }),

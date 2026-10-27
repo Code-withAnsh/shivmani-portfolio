@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { asset } from '../lib/asset.js';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { STACK } from '../data/techstack.js';
@@ -157,7 +158,7 @@ export default function TechStack() {
 
       <div className="tech__foot">
         <span className="tech__count">{TOTAL} tools · {STACK.length} groups</span>
-        <a className="cvbtn" href="/cv/Shivmani-Singh-CV.pdf" download="Shivmani-Singh-CV.pdf">
+        <a className="cvbtn" href={asset('cv/Shivmani-Singh-CV.pdf')} download="Shivmani-Singh-CV.pdf">
           <span className="cvbtn__text">Download CV</span>
           <span className="cvbtn__ico" aria-hidden="true"><i>↓</i><i>↓</i></span>
           <span className="cvbtn__sweep" aria-hidden="true" />

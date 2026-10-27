@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { asset } from '../lib/asset.js';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SOCIALS } from '../data/socials.js';
@@ -9,7 +10,7 @@ const ContactPop = lazy(() => import('./ContactPop.jsx'));
 gsap.registerPlugin(ScrollTrigger);
 
 const EMAIL = 'anshs9333@gmail.com';
-const RESUME = '/cv/Shivmani-Singh-CV.pdf';
+const RESUME = asset('cv/Shivmani-Singh-CV.pdf');
 
 // Footer: a full-screen card that rises up as you scroll into it.
 // Right side: the link buttons (socials, resume, back to top). Left: headline, note, send button, email.
@@ -30,7 +31,7 @@ export default function Footer() {
 
       gsap.from('.ft__hw', { yPercent: 115, stagger: 0.09, duration: 1.1, ease: 'power4.out', scrollTrigger: { trigger: cardRef.current, start: 'top 75%' } });
       gsap.from('.ft__rise', { y: 28, opacity: 0, stagger: 0.08, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: cardRef.current, start: 'top 65%' } });
-      gsap.from('.ft__link', { x: 60, opacity: 0, stagger: 0.09, duration: 0.8, ease: 'back.out(1.4)', scrollTrigger: { trigger: cardRef.current, start: 'top 60%' } });
+      gsap.fromTo('.ft__link', { x: 60, opacity: 0 }, { x: 0, opacity: 1, stagger: 0.09, duration: 0.8, ease: 'back.out(1.4)', scrollTrigger: { trigger: cardRef.current, start: 'top 60%' } });
       gsap.from('.ft__avatar', { x: 120, opacity: 0, duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: cardRef.current, start: 'top 65%' } });
       // Avatar bobs gently once it has landed
       gsap.to('.ft__avatar', { y: -10, duration: 2.2, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.3 });
@@ -116,7 +117,7 @@ export default function Footer() {
 
         <img
           className="ft__avatar"
-          src="/images/footer-avatar.webp"
+          src={asset('images/footer-avatar.webp')}
           alt=""
           draggable="false"
           loading="lazy"

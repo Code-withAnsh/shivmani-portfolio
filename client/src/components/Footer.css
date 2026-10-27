@@ -187,7 +187,7 @@
   .ft__card { height: auto; min-height: 100svh; padding: 34px 22px 26px; }
   .ft__main { position: relative; left: 0; top: 0; bottom: auto; width: 100%; min-height: 100%; }
   .ft__lead { font-size: 16px; }
-  .ft__mail { font-size: 22px; display: inline-block; }
+  .ft__mail { font-size: 22px; display: inline-block; margin-top: 26px; }
   .ft__copy { margin-top: 16px; }
   /* Links stack under the text in normal flow: no absolute offsets or centring transform */
   .ft__links { position: relative; right: auto; top: auto; transform: none; width: 100%; align-items: stretch; margin-top: 28px; }

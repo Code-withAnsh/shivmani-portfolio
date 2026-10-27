@@ -1,5 +1,6 @@
+import { asset } from '../lib/asset.js';
 // Project content. Facts come from each project's own description file; captions describe the screenshot shown.
-const img = (slug, n, caption) => ({ src: `/projects/${slug}/${String(n).padStart(2, '0')}.webp`, caption });
+const img = (slug, n, caption) => ({ src: asset(`projects/${slug}/${String(n).padStart(2, '0')}.webp`), caption });
 
 export const PROJECTS = [
   {

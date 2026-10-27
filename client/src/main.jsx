@@ -5,7 +5,8 @@ const Admin = lazy(() => import('./components/Admin.jsx'));
 import './index.css';
 
 // /admin is the private inbox. Everything else is the portfolio.
-const isAdmin = window.location.pathname.replace(/\/+$/, '') === '/admin';
+const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
+const isAdmin = window.location.pathname.replace(/\/+$/, '') === `${base}/admin`;
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

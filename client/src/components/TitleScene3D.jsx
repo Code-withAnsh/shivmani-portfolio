@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { asset } from '../lib/asset.js';
 import * as THREE from 'three';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
@@ -204,7 +205,7 @@ export default function TitleScene3D({ progressRef }) {
       });
     };
 
-    new FontLoader().load('/fonts/helvetiker_bold.typeface.json', (font) => {
+    new FontLoader().load(asset('fonts/helvetiker_bold.typeface.json'), (font) => {
       const SIZE = 1.7;
       const SPACING = SIZE * 0.05;
       const unit = SIZE / font.data.resolution;

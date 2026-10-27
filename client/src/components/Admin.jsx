@@ -189,7 +189,7 @@ export default function Admin() {
           <button className="adm__btn" type="submit" disabled={busy || locked}>
             {locked ? `Locked · ${lockLeft}s` : busy ? 'Checking…' : 'Log in'}
           </button>
-          <a className="adm__back" href="/">← Back to the site</a>
+          <a className="adm__back" href={import.meta.env.BASE_URL}>← Back to the site</a>
         </form>
       </main>
     );

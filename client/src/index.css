@@ -558,6 +558,11 @@ a { color: inherit; text-decoration: none; }
 }
 
 @media (max-width: 720px) {
+  /* Intro on phones: the outlined name fits the width, the corner labels stay on one line */
+  .intro__title { font-size: 15vw; }
+  .intro__meta { left: 20px; right: 20px; font-size: 0.6rem; letter-spacing: 0.1em; white-space: nowrap; }
+  .intro__meta--top { top: 22px; }
+  .intro__meta--bottom { bottom: 22px; }
   .hero { right: 24px; max-width: none; bottom: 9vh; }
   .hero__tagline { max-width: 30ch; }
   .badge { display: none; }

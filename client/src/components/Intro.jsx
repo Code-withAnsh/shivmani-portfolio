@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { asset } from '../lib/asset.js';
 import DustBackground from './DustBackground.jsx';
 import CloudWipe from './CloudWipe.jsx';
 import { unlockAudio, startDrone, stopDrone, playWhoosh } from '../lib/sound.js';
@@ -111,7 +112,7 @@ export default function Intro({ onReveal, onStart }) {
       <video
         ref={videoRef}
         className={`intro__video ${phase === 'playing' || phase === 'ended' ? 'intro__video--on' : ''}`}
-        src="/videos/intro.mp4"
+        src={asset('videos/intro.mp4')}
         preload="auto"
         playsInline
         onTimeUpdate={handleTimeUpdate}
