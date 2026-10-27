@@ -10,7 +10,7 @@ const ContactPop = lazy(() => import('./ContactPop.jsx'));
 gsap.registerPlugin(ScrollTrigger);
 
 const EMAIL = 'anshs9333@gmail.com';
-const RESUME = asset('cv/Shivmani-Singh-CV.pdf');
+const RESUME = asset('cv/Shivmani_Singh_CV.docx');
 
 // Footer: a full-screen card that rises up as you scroll into it.
 // Right side: the link buttons (socials, resume, back to top). Left: headline, note, send button, email.
@@ -60,6 +60,13 @@ export default function Footer() {
       ctx.revert();
     };
   }, []);
+
+  // Back to top: smooth scroll with Lenis when it is running, otherwise the browser's own smooth scroll
+  const toTop = (e) => {
+    e.preventDefault();
+    if (window.__lenis) window.__lenis.scrollTo(0, { duration: 1.6 });
+    else window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Magnetic link buttons: each one leans toward the pointer
   const onMove = (e) => {
@@ -122,6 +129,7 @@ export default function Footer() {
               rel="noreferrer"
               download={l.download || undefined}
               style={l.color ? { "--c": l.color } : undefined}
+              onClick={l.key === 'top' ? toTop : undefined}
               onPointerMove={onMove}
               onPointerLeave={onLeave}
             >

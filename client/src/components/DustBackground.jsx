@@ -15,7 +15,7 @@ export default function DustBackground({ holdRef }) {
     const pointer = { x: -9999, y: -9999, vx: 0, vy: 0 };
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, window.matchMedia('(max-width: 860px)').matches ? 1.5 : 2);
       w = canvas.clientWidth;
       h = canvas.clientHeight;
       canvas.width = w * dpr;

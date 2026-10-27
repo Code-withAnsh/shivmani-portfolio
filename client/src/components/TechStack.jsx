@@ -205,8 +205,8 @@ export default function TechStack() {
         </span>
         <a
           className="cvbtn"
-          href={asset("cv/Shivmani_Singh_CV.docx")}
-          download="Shivmani-Singh-CV.pdf"
+          href={asset('cv/Shivmani_Singh_CV.docx')}
+          download="Shivmani_Singh_CV.docx"
         >
           <span className="cvbtn__text">Download CV</span>
           <span className="cvbtn__ico" aria-hidden="true">

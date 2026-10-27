@@ -34,8 +34,10 @@ export default function TitleScene3D({ progressRef }) {
     let width = mount.clientWidth;
     let height = mount.clientHeight;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Phones and touch screens get a lighter version: a lower pixel ratio and fewer curve segments. Same shapes, same look.
+    const lowPower = window.matchMedia('(max-width: 860px), (pointer: coarse)').matches;
+    const renderer = new THREE.WebGLRenderer({ antialias: !lowPower, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowPower ? 1.5 : 2));
     renderer.setSize(width, height);
     renderer.setClearColor(0x000000, 0);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -219,11 +221,11 @@ export default function TitleScene3D({ progressRef }) {
           font,
           size: SIZE,
           depth: 0.7,
-          curveSegments: 10,
+          curveSegments: lowPower ? 6 : 10,
           bevelEnabled: true,
           bevelThickness: SIZE * 0.05,
           bevelSize: SIZE * 0.035,
-          bevelSegments: 5,
+          bevelSegments: lowPower ? 3 : 5,
         });
         geo.translate(-ha / 2, -SIZE * 0.36, -0.35);
         geoCache.set(ch, geo);
@@ -331,6 +333,11 @@ export default function TitleScene3D({ progressRef }) {
     window.addEventListener('pointermove', onPointer);
 
     let raf = 0;
+    let visible = true;
+    const io = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+    });
+    io.observe(mount);
     const whooshFired = PLATES.map(() => false);
     const impactFired = PLATES.map(() => false);
     let lastSoundAt = 0;
@@ -358,6 +365,11 @@ export default function TitleScene3D({ progressRef }) {
 
     const tmpV = new THREE.Vector3();
     const tick = (nowMs) => {
+      // Nothing to draw while the canvas is off screen or the intro is over: skip the whole frame
+      if (!visible || document.documentElement.classList.contains('past-stage')) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
       const smooth = progressRef.current;
       tilt.x += (tilt.tx - tilt.x) * 0.05;
       tilt.y += (tilt.ty - tilt.y) * 0.05;
@@ -506,6 +518,7 @@ export default function TitleScene3D({ progressRef }) {
 
     return () => {
       cancelAnimationFrame(raf);
+      io.disconnect();
       window.removeEventListener('resize', onResize);
       window.removeEventListener('pointermove', onPointer);
       scene.traverse((obj) => {

@@ -8,8 +8,8 @@ import { scrambleTo } from '../lib/scramble.js';
 const HOLD_MS = 2000;
 // The page UI starts animating this many seconds before the video ends, so there is no hard cut.
 const REVEAL_BEFORE_END_S = 1.8;
-// If the video is not ready after this long (slow connection), skip the intro and show the landing page
-const READY_TIMEOUT_MS = 8000;
+// If the film has not started this long after the clouds close (very slow connection), show the landing page
+const START_TIMEOUT_MS = 8000;
 
 // Phases: idle -> holding (press) -> clouds (clouds close over the dust) -> playing (clouds part, video plays)
 // -> ended (video stays frozen on its last frame and becomes the landing page background)
@@ -24,10 +24,10 @@ export default function Intro({ onReveal, onStart }) {
   const holdRef = useRef(0);
   const labelRef = useRef(null);
   const [cloudsDone, setCloudsDone] = useState(false);
-  // The press-and-hold only starts once the video can play through; 'stalled' shows a spinner mid-film
-  const [ready, setReady] = useState(false);
-  const readyRef = useRef(false);
+  // 'stalled' shows a spinner while the film is waiting for data (at the start, or mid-film on a slow connection)
   const [stalled, setStalled] = useState(false);
+  const startedRef = useRef(false);
+  const startTimerRef = useRef(0);
 
   const reveal = () => {
     if (revealedRef.current) return;
@@ -36,14 +36,9 @@ export default function Intro({ onReveal, onStart }) {
     onReveal();
   };
 
-  const markReady = () => {
-    readyRef.current = true;
-    setReady(true);
-  };
-
   // Hold timer: measures how long the pointer has been down.
   const startHold = (e) => {
-    if (phase !== 'idle' || !readyRef.current) return;
+    if (phase !== 'idle') return;
     e.currentTarget.setPointerCapture?.(e.pointerId);
     unlockAudio();
     startDrone();
@@ -86,6 +81,12 @@ export default function Intro({ onReveal, onStart }) {
     const video = videoRef.current;
     if (!video) return;
     video.currentTime = 0;
+    setStalled(true);
+    // If the film never starts, do not keep the visitor waiting: go straight to the landing page
+    clearTimeout(startTimerRef.current);
+    startTimerRef.current = setTimeout(() => {
+      if (!startedRef.current) reveal();
+    }, START_TIMEOUT_MS);
     video.play().catch(() => {
       // If the browser refuses sound, play muted instead of showing a frozen frame.
       video.muted = true;
@@ -100,19 +101,10 @@ export default function Intro({ onReveal, onStart }) {
     if (v.duration - v.currentTime <= REVEAL_BEFORE_END_S) reveal();
   };
 
-  // Already cached, or the video is still loading after READY_TIMEOUT_MS: the intro gives way to the landing page
-  useEffect(() => {
-    const v = videoRef.current;
-    if (v && v.readyState >= 4) markReady();
-    const timer = setTimeout(() => {
-      if (!readyRef.current) reveal();
-    }, READY_TIMEOUT_MS);
-    return () => clearTimeout(timer);
-  }, []);
-
   useEffect(
     () => () => {
       cancelAnimationFrame(frameRef.current);
+      clearTimeout(startTimerRef.current);
       stopDrone(0.2);
     },
     []
@@ -121,7 +113,7 @@ export default function Intro({ onReveal, onStart }) {
   const showHold = phase === 'idle' || phase === 'holding' || phase === 'clouds';
   const count = progress < 0.34 ? '3' : progress < 0.67 ? '2' : '1';
   const onHoverLabel = () => {
-    if (phase === 'idle' && ready && labelRef.current) scrambleTo(labelRef.current, 'HOLD', 450);
+    if (phase === 'idle' && labelRef.current) scrambleTo(labelRef.current, 'HOLD', 450);
   };
 
   return (
@@ -139,9 +131,12 @@ export default function Intro({ onReveal, onStart }) {
         playsInline
         onTimeUpdate={handleTimeUpdate}
         onEnded={() => setPhase('ended')}
-        onCanPlayThrough={markReady}
         onWaiting={() => setStalled(true)}
-        onPlaying={() => setStalled(false)}
+        onPlaying={() => {
+          startedRef.current = true;
+          clearTimeout(startTimerRef.current);
+          setStalled(false);
+        }}
         onError={reveal}
       />
 
@@ -157,7 +152,6 @@ export default function Intro({ onReveal, onStart }) {
             <button
               type="button"
               className="hold-button"
-              disabled={!ready}
               onPointerDown={startHold}
               onPointerUp={cancelHold}
               onPointerLeave={cancelHold}
@@ -190,7 +184,7 @@ export default function Intro({ onReveal, onStart }) {
                 <line x1="28" y1="120" x2="212" y2="120" className="hold-button__cross" />
               </svg>
               {phase === 'idle' ? (
-                <span ref={labelRef} className="hold-button__label">{ready ? 'HOLD' : 'LOADING'}</span>
+                <span ref={labelRef} className="hold-button__label">HOLD</span>
               ) : (
                 <span key={count} className="hold-button__count">{count}</span>
               )}

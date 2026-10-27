@@ -27,6 +27,7 @@ export default function ScrollStage() {
     // Lenis gives smooth, eased scrolling; ScrollTrigger is told about every scroll tick.
     const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 0.8, smoothWheel: true, anchors: true });
     lenis.on('scroll', ScrollTrigger.update);
+    window.__lenis = lenis; // used by the footer's Back to top button
     const lenisTick = (time) => lenis.raf(time * 1000);
     gsap.ticker.add(lenisTick);
     gsap.ticker.lagSmoothing(0);
@@ -88,6 +89,7 @@ export default function ScrollStage() {
       if (tickSmooth) gsap.ticker.remove(tickSmooth);
       ctx.revert();
       gsap.ticker.remove(lenisTick);
+      delete window.__lenis;
       lenis.destroy();
       ScrollTrigger.getAll().forEach((st) => st.kill());
     };

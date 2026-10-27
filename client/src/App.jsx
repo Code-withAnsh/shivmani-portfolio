@@ -38,6 +38,7 @@ export default function App() {
   const [revealed, setRevealed] = useState(false);
   const handleReveal = useCallback(() => setRevealed(true), []);
 
+
   // The page is locked while the intro plays, and scrollable once the landing page appears.
   useEffect(() => {
     document.documentElement.classList.toggle('locked', !revealed);
