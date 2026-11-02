@@ -13,8 +13,8 @@ gsap.registerPlugin(ScrollTrigger);
 //  - EASE_RATE: how quickly it closes the gap (higher = snappier, lower = lazier)
 //  - MAX_SPEED: the fastest the animation may move, in "whole sequences per second". Even if the user
 //    flings the wheel, the titles cannot rush past; the whole sequence takes at least 1 / MAX_SPEED seconds.
-const EASE_RATE = 4;
-const MAX_SPEED = 0.3;
+const EASE_RATE = 5;
+const MAX_SPEED = 0.4;
 
 // Scroll-driven sequence on top of the landing page:
 //   hero fades out -> the photo darkens and its blur grows for the whole scroll ->

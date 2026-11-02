@@ -435,7 +435,7 @@ a { color: inherit; text-decoration: none; }
 /* ───── Scroll sequence ───── */
 .scroll-track {
   position: relative;
-  height: 650vh;
+  height: 400vh;
   pointer-events: none;
 }
 

@@ -66,7 +66,7 @@ export default function TitleScene3D({ progressRef }) {
     camera.add(key, key.target, rim, rim.target, glint);
 
     const redMat = new THREE.MeshPhysicalMaterial({
-      color: '#c1121f',
+      color: "#523b35",
       metalness: 0.35,
       roughness: 0.38,
       clearcoat: 0.7,

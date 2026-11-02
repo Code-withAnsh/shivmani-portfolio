@@ -1,0 +1,27 @@
+# Shivmani Singh
+
+> Shivmani Singh is a full stack developer from Varanasi, India. Builds web applications with React, Node.js, Express and MongoDB, and is a BCA final-year student. Works on products end to end: interface, API and database.
+
+Website: https://www.shivmanisingh.in/
+
+## Projects
+
+- [JS Arena](https://hactoberfest.onrender.com): a Java practice platform with a study planner, an AI tutor and a sandboxed code runner. Source: https://github.com/Code-withAnsh/Hactober-fest
+- [HackWave Dispatch](https://emergency-system-fj9i.onrender.com): an emergency dispatch prototype that finds the nearest unit, with live updates. Source: https://github.com/Code-withAnsh/Emergency-system
+- [JRC Inter College](https://jrcintercollege.onrender.com): an online school portal, in Hindi and English. Source: https://github.com/shivmani967082/jrcintercollege
+
+## Skills
+
+React, Vite, GSAP, Three.js, Node.js, Express, MongoDB, Mongoose, JavaScript, Java.
+
+## Profiles
+
+- GitHub: https://github.com/Code-withAnsh
+- LinkedIn: https://www.linkedin.com/in/shivmani-singh-11b122306/
+- LeetCode: https://leetcode.com/u/code-withansh
+- X: https://x.com/anshs9333
+- Instagram: https://www.instagram.com/shivmani.codes/
+
+## Contact
+
+- Email: anshs9333@gmail.com

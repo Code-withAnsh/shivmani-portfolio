@@ -7,6 +7,7 @@ import './index.css';
 // /admin is the private inbox. Everything else is the portfolio.
 const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
 const isAdmin = window.location.pathname.replace(/\/+$/, '') === `${base}/admin`;
+if (isAdmin) document.head.insertAdjacentHTML('beforeend', '<meta name="robots" content="noindex, nofollow" />');
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
