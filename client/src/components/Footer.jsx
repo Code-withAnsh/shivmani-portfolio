@@ -150,6 +150,8 @@ export default function Footer() {
           className="ft__avatar"
           src={asset('images/footer-avatar.webp')}
           alt=""
+          width="463"
+          height="1200"
           draggable="false"
           loading="lazy"
           decoding="async"

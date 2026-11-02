@@ -1,6 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import Intro from './components/Intro.jsx';
 import Landing from './components/Landing.jsx';
+import Faq from './components/Faq.jsx';
 
 // Everything below the landing page is split into its own chunk. The chunks start downloading as soon
 // as the visitor begins the hold (see preloadPage), so they are ready by the time the page appears.
@@ -71,6 +72,7 @@ export default function App() {
           <Suspense fallback={null}>
             <Gallery />
           </Suspense>
+          <Faq />
           <Suspense fallback={null}>
             <Footer />
           </Suspense>
